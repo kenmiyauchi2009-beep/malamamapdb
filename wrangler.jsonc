@@ -18,7 +18,19 @@
 	"observability": {
 		"enabled": true
 	},
-	"upload_source_maps": true
+	"upload_source_maps": true,
+	/**
+	 * 本番の環境変数（非シークレット）。
+	 * ALLOWED_ORIGIN … CORS で許可するフロントのオリジン（カンマ区切り）。
+	 *   UI は https://malama-map.com / https://web.malama-map.com の
+	 *   どちらから配信されても通るよう両方を許可する。
+	 * ※ ローカル開発（wrangler dev）では .dev.vars の値が優先される。
+	 * ※ SUPABASE_URL / SUPABASE_ANON_KEY は本番では `wrangler secret put`
+	 *   もしくはダッシュボードの Variables で設定すること（ここには置かない）。
+	 */
+	"vars": {
+		"ALLOWED_ORIGIN": "https://malama-map.com,https://web.malama-map.com"
+	}
 	/**
 	 * Smart Placement
 	 * https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement
