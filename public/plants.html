@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mālama Map — ハワイ在来植物の市民マップ</title>
+  <title>植物図鑑 Plants — Mālama Map</title>
 
-  <!-- Leaflet（地図ライブラリ）CDN・APIキー不要 -->
+  <!-- Leaflet（詳細モーダルのミニ地図用） -->
   <link
     rel="stylesheet"
     href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -30,38 +30,37 @@
       </span>
     </a>
     <nav class="main-nav">
-      <a href="index.html" class="active">地図<small>Map</small></a>
-      <a href="plants.html">植物図鑑<small>Plants</small></a>
+      <a href="index.html">地図<small>Map</small></a>
+      <a href="plants.html" class="active">植物図鑑<small>Plants</small></a>
       <a href="report.html">投稿<small>Report</small></a>
       <a href="#" class="disabled">統計<small>Stats</small></a>
       <a href="#" class="disabled">マイページ<small>Profile</small></a>
     </nav>
   </header>
 
-  <!-- メイン：左に地図 / 右に最新投稿 -->
-  <main class="layout">
-    <section>
-      <div id="map"></div>
-    </section>
+  <main class="plants-page">
+    <div class="page-intro">
+      <h1>植物図鑑 Plants</h1>
+      <p>ハワイの在来種と、森を脅かす外来種。見つけて投稿すると図鑑が埋まっていきます。</p>
+      <div class="dex-progress" id="dexProgress"></div>
+    </div>
 
-    <aside class="sidebar">
-      <div class="legend">
-        <h3>凡例 Legend</h3>
-        <div class="legend-item"><span class="dot native"></span> 在来種 Native</div>
-        <div class="legend-item"><span class="dot invasive"></span> 外来種 Invasive</div>
-        <div class="legend-item"><span class="dot rod"></span> ROD 要観察（ʻŌhiʻa）</div>
-      </div>
+    <!-- フィルタ（plants.js が動かす） -->
+    <div class="filters" id="filters">
+      <button class="filter-btn active" data-filter="all">すべて All</button>
+      <button class="filter-btn" data-filter="native">在来種 Native</button>
+      <button class="filter-btn" data-filter="invasive">外来種 Invasive</button>
+    </div>
 
-      <h2>最新の目撃 Recent Sightings</h2>
-      <div class="feed" id="feed"><!-- map.js が投稿カードを差し込む --></div>
-    </aside>
+    <!-- カードがここに入る -->
+    <div class="plant-grid" id="plantGrid"></div>
   </main>
 
   <footer class="site-footer">
     Mālama Map — 市民科学でハワイの森を守る · みんなの投稿を共有
   </footer>
 
-  <!-- 設定 → supabase-js → 認証 → Leaflet → データ → 地図ロジック の順で読み込む -->
+  <!-- 設定 → supabase-js → 認証 → Leaflet → データ → 図鑑ロジック -->
   <script src="config.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="auth.js"></script>
@@ -71,6 +70,6 @@
     crossorigin=""
   ></script>
   <script src="data.js"></script>
-  <script src="map.js"></script>
+  <script src="plants.js"></script>
 </body>
 </html>

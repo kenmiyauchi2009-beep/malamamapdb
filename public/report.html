@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>投稿 Report — Mālama Map</title>
+
+  <!-- Leaflet（地点選択ミニマップ用） -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  />
+  <!-- Cropper.js（写真クロップ用） -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.css" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <!-- 図鑑ノート風の見出しフォント（セリフ体 Fraunces） -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- 共通ヘッダー / ナビ -->
+  <header class="site-header">
+    <a class="brand" href="index.html">
+      <img class="logo" src="favicon.svg" alt="Mālama Map ロゴ" width="30" height="30" />
+      <span>
+        <span class="title">Mālama Map</span>
+        <span class="tagline">ハワイ在来植物を守る市民マップ</span>
+      </span>
+    </a>
+    <nav class="main-nav">
+      <a href="index.html">地図<small>Map</small></a>
+      <a href="plants.html">植物図鑑<small>Plants</small></a>
+      <a href="report.html" class="active">投稿<small>Report</small></a>
+      <a href="#" class="disabled">統計<small>Stats</small></a>
+      <a href="#" class="disabled">マイページ<small>Profile</small></a>
+    </nav>
+  </header>
+
+  <main class="report-page">
+    <div class="page-intro">
+      <h1>目撃を投稿 Report a Sighting</h1>
+      <p>見つけた植物の場所と写真を記録しよう。投稿は地図にすぐ反映されます。</p>
+    </div>
+
+    <form id="reportForm" class="report-form">
+
+      <!-- 1. 写真を撮る / 選ぶ -->
+      <div class="field">
+        <label class="field-label">① 写真 Photo</label>
+        <div class="photo-uploader" id="photoBox">
+          <input
+            type="file"
+            id="photoInput"
+            accept="image/*"
+            capture="environment"
+            hidden
+          />
+          <div class="photo-placeholder" id="photoPlaceholder">
+            <span class="cam-icon" aria-hidden="true">＋</span>
+            <span>タップして写真を撮る / 選ぶ</span>
+            <small>Take or choose a photo</small>
+          </div>
+          <img id="photoPreview" class="photo-preview" alt="プレビュー" hidden />
+        </div>
+        <button type="button" id="cropBtn" class="ghost-btn crop-btn" hidden>範囲を選ぶ（複数の植物があるとき）</button>
+        <button type="button" id="clearPhoto" class="link-btn" hidden>写真を消す</button>
+
+        <!-- AI 種提案（BioCLIP）の結果がここに出る -->
+        <div id="aiResult" class="ai-result" hidden></div>
+      </div>
+
+      <!-- 2. 地点を選ぶ -->
+      <div class="field">
+        <label class="field-label">② 地点 Location</label>
+        <p class="hint">写真に位置情報があれば自動で候補を表示します。地図をタップ／ピンをドラッグで微調整できます。</p>
+        <!-- 写真のEXIFから推定した位置の「ここですか？」サジェスト -->
+        <div id="exifSuggest" class="exif-suggest" hidden></div>
+        <div id="pickMap" class="pick-map"></div>
+        <div class="loc-row">
+          <button type="button" id="useGps" class="ghost-btn">現在地を使う</button>
+          <span id="coordLabel" class="coord-label">未選択</span>
+        </div>
+      </div>
+
+      <!-- 3. 植物名 -->
+      <div class="field">
+        <label class="field-label" for="plantSelect">③ 植物名 Plant</label>
+        <select id="plantSelect" class="text-input" required>
+          <option value="" disabled selected hidden>— 写真を撮ると候補が出ます —</option>
+          <!-- report.js が BioCLIP の候補を入れる -->
+        </select>
+        <p class="hint">植物名は <strong>BioCLIP の候補</strong>から選びます。上の候補リストをタップしても選べます。分からなければ「未確認」でOK。</p>
+      </div>
+
+      <!-- 4. メモ -->
+      <div class="field">
+        <label class="field-label" for="noteInput">④ メモ Note</label>
+        <textarea
+          id="noteInput"
+          class="text-input"
+          rows="3"
+          placeholder="例：葉に黒ずみあり、ROD要観察"
+        ></textarea>
+      </div>
+
+      <!-- 5. 報告者名（ログインユーザー） -->
+      <div class="field">
+        <label class="field-label">⑤ 報告者 Reporter</label>
+        <div id="reporterName" class="text-input" style="background:#f4f1ea;color:#555;">
+          ログイン確認中…
+        </div>
+        <p class="hint">ログイン中のアカウント名で投稿されます。</p>
+      </div>
+
+      <!-- エラー / 送信 -->
+      <p id="formError" class="form-error" hidden></p>
+      <button type="submit" class="submit-btn">この内容で投稿する</button>
+    </form>
+  </main>
+
+  <footer class="site-footer">
+    Mālama Map — フェーズ2 · 投稿はアカウントに紐づき、地図にすぐ共有されます
+  </footer>
+
+  <!-- 設定 → supabase-js → 認証（requireLogin 用） -->
+  <script src="config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="auth.js"></script>
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""
+  ></script>
+  <!-- EXIF（写真の位置情報）読み取りライブラリ -->
+  <script src="https://cdn.jsdelivr.net/npm/exifr/dist/full.umd.js"></script>
+  <!-- Cropper.js（写真クロップ） -->
+  <script src="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.js"></script>
+  <script src="data.js"></script>
+  <script src="report.js"></script>
+</body>
+</html>

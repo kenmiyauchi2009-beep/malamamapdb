@@ -3,6 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "sync-ui": "node scripts/sync-ui.mjs",
+    "predeploy": "npm run sync-ui",
     "deploy": "wrangler deploy",
     "dev": "wrangler dev",
     "start": "wrangler dev",

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ログイン Login — Mālama Map</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- 共通ヘッダー / ナビ -->
+  <header class="site-header">
+    <a class="brand" href="index.html">
+      <img class="logo" src="favicon.svg" alt="Mālama Map ロゴ" width="30" height="30" />
+      <span>
+        <span class="title">Mālama Map</span>
+        <span class="tagline">ハワイ在来植物を守る市民マップ</span>
+      </span>
+    </a>
+    <nav class="main-nav">
+      <a href="index.html">地図<small>Map</small></a>
+      <a href="plants.html">植物図鑑<small>Plants</small></a>
+      <a href="report.html">投稿<small>Report</small></a>
+    </nav>
+  </header>
+
+  <main class="report-page">
+    <div class="page-intro">
+      <h1>ログイン Login</h1>
+      <p>投稿するには Google アカウントでのログインが必要です。</p>
+    </div>
+
+    <div class="report-form">
+      <p id="authError" class="form-error" hidden></p>
+
+      <button type="button" class="submit-btn" id="googleBtn" style="width:100%;">Google でログイン</button>
+
+      <p class="hint" style="margin-top:16px;text-align:center;">
+        ログインすると投稿がアカウントに紐づき、地図・図鑑に共有されます。
+      </p>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    Mālama Map — フェーズ2 · アカウントで投稿を共有・保存します
+  </footer>
+
+  <script src="config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="auth.js"></script>
+  <script>
+    // ?redirect= の戻り先（既定は index.html）
+    const params = new URLSearchParams(location.search);
+    const redirect = params.get("redirect") || "index.html";
+    const errorBox = document.getElementById("authError");
+
+    // すでにログイン済みなら戻り先へ
+    getCurrentUser().then(function (u) { if (u) location.href = redirect; });
+
+    // Google ログインのみ（メール/パスワードは廃止）
+    document.getElementById("googleBtn").addEventListener("click", async function () {
+      errorBox.hidden = true;
+      // リダイレクト先は環境ごとに切り替わる MALAMA_SITE_URL を基準にする
+      const base = window.MALAMA_SITE_URL || location.origin;
+      const { error } = await signInWithGoogle(base + "/" + redirect);
+      if (error) { errorBox.textContent = error.message; errorBox.hidden = false; }
+    });
+  </script>
+</body>
+</html>
