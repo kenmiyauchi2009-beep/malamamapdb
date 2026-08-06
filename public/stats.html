@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>統計 Stats — Mālama Map</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- 共通ヘッダー / ナビ -->
+  <header class="site-header">
+    <a class="brand" href="index.html">
+      <img class="logo" src="favicon.svg" alt="Mālama Map ロゴ" width="30" height="30" />
+      <span>
+        <span class="title">Mālama Map</span>
+        <span class="tagline">ハワイ在来植物を守る市民マップ</span>
+      </span>
+    </a>
+    <nav class="main-nav">
+      <a href="index.html">地図<small>Map</small></a>
+      <a href="plants.html">植物図鑑<small>Plants</small></a>
+      <a href="report.html">投稿<small>Report</small></a>
+      <a href="stats.html" class="active">統計<small>Stats</small></a>
+    </nav>
+  </header>
+
+  <main class="plants-page">
+    <div class="page-intro">
+      <h1>統計 Stats</h1>
+      <p>みんなの投稿から、在来種と外来種の傾向を読み解きます。</p>
+      <p class="stats-note">
+        ※ ここに出るのは <strong>観測トレンド（目撃報告数）</strong> であり、植物の実際の個体数ではありません。
+        報告数は観測者・投稿の増減にも左右されるため、構成比や地点数など「努力に左右されにくい指標」を重視しています。
+      </p>
+    </div>
+
+    <!-- タブ -->
+    <div class="stats-tabs" id="statsTabs">
+      <button class="tab-btn active" data-tab="summary">サマリー</button>
+      <button class="tab-btn" data-tab="trend">トレンド</button>
+      <button class="tab-btn" data-tab="ranking">ランキング</button>
+    </div>
+
+    <!-- パネル：サマリー -->
+    <section class="stats-panel active" id="panel-summary">
+      <div class="kpi-grid" id="kpiGrid"></div>
+      <div class="chart-box">
+        <h3 class="chart-title">在来 vs 外来（報告数の構成比）</h3>
+        <div class="chart-canvas-wrap"><canvas id="chartComposition"></canvas></div>
+      </div>
+    </section>
+
+    <!-- パネル：トレンド -->
+    <section class="stats-panel" id="panel-trend">
+      <div class="chart-box">
+        <h3 class="chart-title">月別 目撃報告数（観測トレンド）</h3>
+        <div id="trendGuard" class="stats-empty" hidden></div>
+        <div class="chart-canvas-wrap"><canvas id="chartMonthly"></canvas></div>
+      </div>
+      <div class="chart-box">
+        <h3 class="chart-title">在来 vs 外来 シェアの推移</h3>
+        <div class="chart-canvas-wrap"><canvas id="chartShare"></canvas></div>
+      </div>
+    </section>
+
+    <!-- パネル：ランキング -->
+    <section class="stats-panel" id="panel-ranking">
+      <div class="chart-box">
+        <h3 class="chart-title">よく報告される種 トップ</h3>
+        <div id="rankList" class="rank-list"></div>
+      </div>
+      <div class="chart-box">
+        <h3 class="chart-title">前期比の増減（直近 vs その前）</h3>
+        <div id="changeGuard" class="stats-empty" hidden></div>
+        <div id="changeList" class="rank-list"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    Mālama Map — 市民科学でハワイの森を守る · 数値は観測トレンド（目撃報告数）
+  </footer>
+
+  <script src="config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="auth.js"></script>
+  <script src="data.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+  <script src="stats.js"></script>
+</body>
+</html>
