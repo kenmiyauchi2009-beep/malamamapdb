@@ -96,11 +96,9 @@ async function renderAuthNav() {
   item.href = "#";
 
   if (user) {
-    item.innerHTML = "ログアウト<small>" + userDisplayName(user) + "</small>";
-    item.addEventListener("click", function (e) {
-      e.preventDefault();
-      signOut();
-    });
+    // ログイン中はプロフィール（マイページ）へのリンク。ログアウトはマイページ内に置く。
+    item.href = "profile.html";
+    item.innerHTML = "マイページ<small>" + userDisplayName(user) + "</small>";
   } else {
     item.innerHTML = "ログイン<small>Login</small>";
     item.href = "login.html";

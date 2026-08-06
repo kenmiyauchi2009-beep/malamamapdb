@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>マイページ Profile — Mālama Map</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- 共通ヘッダー / ナビ -->
+  <header class="site-header">
+    <a class="brand" href="index.html">
+      <img class="logo" src="favicon.svg" alt="Mālama Map ロゴ" width="30" height="30" />
+      <span>
+        <span class="title">Mālama Map</span>
+        <span class="tagline">ハワイ在来植物を守る市民マップ</span>
+      </span>
+    </a>
+    <nav class="main-nav">
+      <a href="index.html">地図<small>Map</small></a>
+      <a href="plants.html">植物図鑑<small>Plants</small></a>
+      <a href="report.html">投稿<small>Report</small></a>
+    </nav>
+  </header>
+
+  <main class="plants-page">
+    <div class="page-intro">
+      <h1>マイページ Profile</h1>
+    </div>
+
+    <!-- プロフィール概要 -->
+    <section class="profile-head">
+      <div class="profile-avatar" id="pAvatar" aria-hidden="true"></div>
+      <div class="profile-info">
+        <div class="profile-name" id="pName">—</div>
+        <div class="profile-meta">
+          <span id="pEmail"></span>
+        </div>
+        <div class="profile-meta">
+          参加日 <span id="pJoined">—</span>
+        </div>
+        <div class="profile-stats" id="pStats">—</div>
+      </div>
+      <button type="button" id="logoutBtn" class="ghost-btn">ログアウト</button>
+    </section>
+
+    <h2 class="profile-section-title">見つけた植物 My Finds</h2>
+    <div class="plant-grid" id="myFinds"></div>
+  </main>
+
+  <footer class="site-footer">
+    Mālama Map — フェーズ2 · あなたの発見の記録
+  </footer>
+
+  <script src="config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="auth.js"></script>
+  <script src="data.js"></script>
+  <script>
+    // ログイン必須（未ログインなら login.html へ退避）
+    requireLogin().then(async function (user) {
+      if (!user) return;
+
+      // ---- プロフィール概要 ----
+      const name = userDisplayName(user);
+      document.getElementById("pName").textContent = name;
+      document.getElementById("pEmail").textContent = user.email || "";
+      // アバターは名前の頭文字
+      document.getElementById("pAvatar").textContent = (name[0] || "?").toUpperCase();
+      // 参加日（Supabase の created_at）
+      const joined = user.created_at ? new Date(user.created_at) : null;
+      document.getElementById("pJoined").textContent = joined
+        ? joined.toLocaleDateString("ja-JP", { year: "numeric", month: "long", day: "numeric" })
+        : "—";
+
+      // ---- 自分の投稿を集計 ----
+      await loadSightings();
+      const mine = getAllSightings().filter(function (s) {
+        // user_id があれば厳密一致、無ければ表示名で判定
+        return (s.user_id && s.user_id === user.id) || s.reporter === name;
+      });
+
+      // 種ごとにまとめる（骨格種は id、コミュニティ種は学名でキー化）
+      const bySpecies = {};
+      mine.forEach(function (s) {
+        const plant = getPlantById(s.plantId);
+        const key = plant ? plant.id : (s.speciesName || "unknown");
+        if (!bySpecies[key]) {
+          bySpecies[key] = {
+            plant: plant || null,
+            speciesName: s.speciesName || (plant ? plant.scientificName : "未確認"),
+            count: 0, photo: null, first: s.date, last: s.date,
+          };
+        }
+        const g = bySpecies[key];
+        g.count++;
+        if (s.photoUrl && !g.photo) g.photo = s.photoUrl;
+        if (s.date < g.first) g.first = s.date;
+        if (s.date > g.last) g.last = s.date;
+      });
+      const species = Object.keys(bySpecies).map(function (k) { return bySpecies[k]; });
+
+      // ---- 統計 ----
+      document.getElementById("pStats").textContent =
+        "発見 " + species.length + " 種 ・ 投稿 " + mine.length + " 件";
+
+      // ---- 発見した植物カード ----
+      const grid = document.getElementById("myFinds");
+      if (!species.length) {
+        grid.innerHTML =
+          '<p class="dex-empty">まだ植物を投稿していません。' +
+          '<a href="report.html">投稿</a>すると、ここに記録が残ります。</p>';
+        return;
+      }
+      // 発見数が多い順
+      species.sort(function (a, b) { return b.count - a.count; });
+
+      species.forEach(function (g) {
+        const plant = g.plant;
+        const hawName = plant ? plant.hawaiianName : g.speciesName;
+        const sciName = plant ? plant.scientificName : g.speciesName;
+        const category = plant ? plant.category : "community";
+        const catLabel = category === "native" ? "在来種 Native"
+                       : category === "invasive" ? "外来種 Invasive"
+                       : "コミュニティ";
+        const photoSrc = g.photo || (plant ? plant.imageUrl : null);
+        const color = plant ? plant.color : "#6b7261";
+
+        const card = document.createElement("article");
+        card.className = "plant-card";
+
+        const photoHtml = photoSrc
+          ? '<img src="' + photoSrc + '" alt="' + hawName + '" loading="lazy" onerror="this.style.display=\'none\'">'
+          : '<div class="photo-fallback" style="background:' + color + '"></div>';
+
+        const dateText = g.first === g.last
+          ? g.last
+          : g.first + " 〜 " + g.last;
+
+        card.innerHTML =
+          '<div class="plant-photo">' + photoHtml +
+            '<span class="cat-tag ' + category + '">' + catLabel + "</span>" +
+            '<span class="dex-state found">×' + g.count + "</span>" +
+          "</div>" +
+          '<div class="plant-body">' +
+            '<div class="haw-name">' + hawName + "</div>" +
+            '<div class="sci-name">' + sciName + "</div>" +
+            '<div class="find-date">' + dateText + "</div>" +
+          "</div>";
+
+        grid.appendChild(card);
+      });
+    });
+
+    // ログアウト
+    document.getElementById("logoutBtn").addEventListener("click", function () {
+      signOut();
+    });
+  </script>
+</body>
+</html>

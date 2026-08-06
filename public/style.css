@@ -244,6 +244,43 @@ h1, h2, h3, h4 { font-family: var(--serif); font-weight: 600; }
   gap: 1.8rem;
 }
 
+/* ---------- マイページ（プロフィール） ---------- */
+.profile-head {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1.4rem 1.5rem;
+  margin-bottom: 2.4rem;
+  flex-wrap: wrap;
+}
+.profile-avatar {
+  width: 64px; height: 64px; flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--forest);
+  color: var(--paper);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--serif); font-size: 1.8rem; font-weight: 600;
+}
+.profile-info { flex: 1; min-width: 180px; }
+.profile-name { font-family: var(--serif); font-size: 1.5rem; font-weight: 600; color: var(--forest); }
+.profile-meta { font-size: 0.85rem; color: var(--text-soft); margin-top: 0.15rem; }
+.profile-stats {
+  font-family: var(--serif); font-size: 0.95rem; color: var(--forest);
+  margin-top: 0.5rem;
+}
+.profile-section-title {
+  font-size: 1.4rem; color: var(--forest); font-weight: 600;
+  padding-bottom: 0.4rem; border-bottom: 2px solid var(--rule);
+  display: inline-block; margin-bottom: 1.4rem;
+}
+.plant-body .find-date {
+  font-size: 0.78rem; color: var(--text-soft); margin-top: 0.2rem;
+}
+
 /* 図鑑が空のとき */
 .dex-empty {
   grid-column: 1 / -1;
