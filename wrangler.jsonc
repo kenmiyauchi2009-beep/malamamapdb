@@ -29,7 +29,7 @@
 	 *   もしくはダッシュボードの Variables で設定すること（ここには置かない）。
 	 */
 	"vars": {
-		"ALLOWED_ORIGIN": "https://malama-map.com,https://web.malama-map.com"
+		"ALLOWED_ORIGIN": "https://malama-map.com,https://web.malama-map.com,http://http://localhost:3000"
 	}
 	/**
 	 * Smart Placement
