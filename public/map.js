@@ -38,10 +38,10 @@ setTimeout(fitHawaii, 300);
 /* 未確認（plantId が "unknown" 等で植物が見つからない）投稿の代用データ */
 const UNKNOWN_PLANT = {
   hawaiianName: "未確認 Unverified",
-  scientificName: "コミュニティ判定待ち",
+  scientificName: t("map.awaiting"),
   category: "unknown",
   status: "watch",
-  statusLabel: "未確認",
+  statusLabel: t("map.unconfirmed"),
   emoji: "❓",
   rodRisk: false
 };
@@ -64,7 +64,7 @@ function markerStyle(plant) {
 // ポップアップの中身（クリックで出る吹き出し）
 function popupHtml(plant, sighting) {
   const rodTag = plant.rodRisk
-    ? '<span class="badge rod">ROD 要観察</span> '
+    ? '<span class="badge rod">' + t("map.rod_watch") + "</span> "
     : "";
   const catLabel =
     plant.category === "native" ? "在来種 Native" :
@@ -76,7 +76,7 @@ function popupHtml(plant, sighting) {
   // BioCLIP が出した学名があればそれを見出しに使う
   const title = sighting.speciesName || plant.hawaiianName;
   const subtitle = sighting.speciesName
-    ? (getPlantById(sighting.plantId) ? plant.hawaiianName : "BioCLIP 判定")
+    ? (getPlantById(sighting.plantId) ? plant.hawaiianName : t("map.bioclip_id"))
     : plant.scientificName;
   const aiTag = (sighting.aiScore != null)
     ? ' <span class="badge keystone">AI ' + Math.round(sighting.aiScore * 100) + "%</span>"
@@ -134,7 +134,7 @@ function renderFeed() {
     // BioCLIP の学名があれば見出しに使う
     const fcName = s.speciesName || plant.hawaiianName;
     const fcSub = s.speciesName
-      ? (getPlantById(s.plantId) ? plant.hawaiianName : "BioCLIP 判定")
+      ? (getPlantById(s.plantId) ? plant.hawaiianName : t("map.bioclip_id"))
       : plant.scientificName;
 
     card.innerHTML =

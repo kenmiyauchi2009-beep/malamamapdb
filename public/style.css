@@ -98,7 +98,8 @@ h1, h2, h3, h4 { font-family: var(--serif); font-weight: 600; }
   color: var(--text-soft);
 }
 
-.main-nav { display: flex; gap: 0.2rem; flex-wrap: wrap; }
+/* ナビは右寄せにして、右端の言語スイッチのすぐ隣に並べる */
+.main-nav { display: flex; gap: 0.2rem; flex-wrap: wrap; margin-left: auto; }
 .main-nav a {
   color: var(--forest);
   text-decoration: none;
@@ -120,6 +121,34 @@ h1, h2, h3, h4 { font-family: var(--serif); font-weight: 600; }
   box-shadow: inset 0 -2px 0 var(--lehua);   /* 下線（レイアウトをずらさない） */
 }
 .main-nav a.disabled { color: var(--text-soft); opacity: 0.5; pointer-events: none; }
+
+/* 言語スイッチ（地球儀アイコン＋ドロップダウン） */
+.lang-switch { position: relative; display: inline-flex; align-self: center; }
+.lang-globe {
+  display: inline-flex; align-items: center; gap: 0.15rem;
+  border: 1px solid var(--rule); border-radius: 6px; background: transparent;
+  color: var(--forest); padding: 0.3rem 0.45rem; cursor: pointer;
+  transition: background 0.15s ease;
+}
+.lang-globe:hover { background: var(--paper-warm); }
+.lang-globe svg { display: block; }
+.lang-caret { font-size: 0.6rem; line-height: 1; }
+.lang-menu {
+  position: absolute; top: calc(100% + 6px); right: 0; z-index: 1200;
+  min-width: 130px; background: var(--card);
+  border: 1px solid var(--rule); border-radius: 7px;
+  box-shadow: 0 8px 20px rgba(43, 42, 38, 0.18); overflow: hidden;
+}
+.lang-item {
+  display: block; width: 100%; text-align: left;
+  border: none; background: transparent; cursor: pointer; white-space: nowrap;
+  font-family: var(--sans); font-size: 0.85rem; color: var(--forest);
+  padding: 0.5rem 0.85rem;
+}
+.lang-item + .lang-item { border-top: 1px solid var(--rule-soft); }
+.lang-item:hover { background: var(--paper-warm); }
+.lang-item.active { font-weight: 700; color: var(--lehua); }
+.lang-item.active::before { content: "✓ "; }
 
 /* ---------- レイアウト ---------- */
 .layout {

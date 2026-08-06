@@ -95,11 +95,11 @@ const catColor = function (cat) {
 /* ---------- タブ1：サマリー ---------- */
 function renderSummary(a) {
   const tiles = [
-    { num: a.total, label: "合計 投稿数" },
-    { num: a.distinctSpecies, label: "発見した種数" },
-    { num: a.contributors, label: "貢献者数" },
-    { num: a.rodCount, label: "ROD報告（ʻŌhiʻa）" },
-    { num: a.recent30, label: "直近30日の投稿" },
+    { num: a.total, label: t("stats.kpi_total") },
+    { num: a.distinctSpecies, label: t("stats.kpi_species") },
+    { num: a.contributors, label: t("stats.kpi_contributors") },
+    { num: a.rodCount, label: t("stats.kpi_rod") },
+    { num: a.recent30, label: t("stats.kpi_recent") },
   ];
   document.getElementById("kpiGrid").innerHTML = tiles.map(function (t) {
     return '<div class="kpi-tile"><div class="kpi-num">' + t.num +
@@ -110,13 +110,13 @@ function renderSummary(a) {
   const ctx = document.getElementById("chartComposition");
   if (a.total === 0) {
     ctx.parentNode.insertAdjacentHTML("beforeend",
-      '<p class="stats-empty">まだ投稿がありません。</p>');
+      '<p class="stats-empty">' + t("stats.empty_none") + "</p>");
     return;
   }
   charts.composition = new Chart(ctx, {
     type: "doughnut",
     data: {
-      labels: ["在来 Native", "外来 Invasive", "未分類"],
+      labels: [t("stats.legend_native"), t("stats.legend_invasive"), t("stats.legend_community")],
       datasets: [{
         data: [a.nativeCount, a.invasiveCount, a.communityCount],
         backgroundColor: [C.forestLight, C.lehua, C.gray],
@@ -137,8 +137,7 @@ function renderTrend(a) {
   // データ不足ガード（月をまたぐデータが無い/少ない）
   if (a.total < 5 || a.months.length < 2) {
     guard.hidden = false;
-    guard.textContent =
-      "月をまたぐデータが貯まると傾向グラフが表示されます（現在はデータ不足）。";
+    guard.textContent = t("stats.trend_insufficient");
     return;
   }
 
@@ -153,9 +152,9 @@ function renderTrend(a) {
     data: {
       labels: labels,
       datasets: [
-        { label: "合計", data: totalSeries, borderColor: C.forest, backgroundColor: C.forest, tension: 0.25 },
-        { label: "在来", data: nativeSeries, borderColor: C.forestLight, backgroundColor: C.forestLight, tension: 0.25 },
-        { label: "外来", data: invasiveSeries, borderColor: C.lehua, backgroundColor: C.lehua, tension: 0.25 },
+        { label: t("stats.ds_total"), data: totalSeries, borderColor: C.forest, backgroundColor: C.forest, tension: 0.25 },
+        { label: t("stats.ds_native"), data: nativeSeries, borderColor: C.forestLight, backgroundColor: C.forestLight, tension: 0.25 },
+        { label: t("stats.ds_invasive"), data: invasiveSeries, borderColor: C.lehua, backgroundColor: C.lehua, tension: 0.25 },
       ],
     },
     options: {
@@ -180,8 +179,8 @@ function renderTrend(a) {
     data: {
       labels: labels,
       datasets: [
-        { label: "在来 %", data: nativePct, backgroundColor: C.forestLight },
-        { label: "外来 %", data: invasivePct, backgroundColor: C.lehua },
+        { label: t("stats.ds_native_pct"), data: nativePct, backgroundColor: C.forestLight },
+        { label: t("stats.ds_invasive_pct"), data: invasivePct, backgroundColor: C.lehua },
       ],
     },
     options: {
@@ -200,7 +199,7 @@ function renderRanking(a) {
     .sort(function (x, y) { return y.count - x.count; }).slice(0, 8);
   const listEl = document.getElementById("rankList");
   if (!ranked.length) {
-    listEl.innerHTML = '<p class="stats-empty">まだ投稿がありません。</p>';
+    listEl.innerHTML = '<p class="stats-empty">' + t("stats.empty_none") + "</p>";
   } else {
     const max = ranked[0].count || 1;
     listEl.innerHTML = ranked.map(function (sp) {
@@ -218,7 +217,7 @@ function renderRanking(a) {
   const changeEl = document.getElementById("changeList");
   if (a.months.length < 2) {
     changeGuard.hidden = false;
-    changeGuard.textContent = "2か月分以上のデータが貯まると増減が表示されます（データ不足）。";
+    changeGuard.textContent = t("stats.change_insufficient");
     return;
   }
   const latest = a.months[a.months.length - 1];
@@ -233,7 +232,7 @@ function renderRanking(a) {
     .sort(function (x, y) { return y.delta - x.delta; });
 
   if (!changes.length) {
-    changeEl.innerHTML = '<p class="stats-empty">直近2か月に投稿がありません。</p>';
+    changeEl.innerHTML = '<p class="stats-empty">' + t("stats.change_none") + "</p>";
     return;
   }
 
@@ -243,8 +242,8 @@ function renderRanking(a) {
     // 外来種が増加＝早期警戒アラート
     const alert = (c.category === "invasive" && c.delta > 0) ? " alert" : "";
     let deltaText;
-    if (c.before === 0) deltaText = "新規 +" + c.cur;
-    else if (c.delta === 0) deltaText = "±0";
+    if (c.before === 0) deltaText = t("stats.new_plus", { n: c.cur });
+    else if (c.delta === 0) deltaText = t("stats.flat");
     else {
       const pct = Math.round(((c.cur - c.before) / c.before) * 100);
       deltaText = (c.delta > 0 ? "+" : "") + c.delta + "（" + (pct > 0 ? "+" : "") + pct + "%）";
@@ -253,7 +252,7 @@ function renderRanking(a) {
       '<span class="rank-name">' + c.name + "</span>" +
       '<span class="change-arrow">' + arrow + "</span>" +
       '<span class="change-delta">' + deltaText +
-        (alert ? ' <span class="change-alertlabel">外来急増</span>' : "") +
+        (alert ? ' <span class="change-alertlabel">' + t("stats.alert_label") + "</span>" : "") +
       "</span>" +
     "</div>";
   }).join("");
@@ -284,7 +283,7 @@ function updateHeat() {
   const pts = heatPoints(heatFilter);
   if (!pts.length) {
     empty.hidden = false;
-    empty.textContent = "この条件の投稿がまだありません。";
+    empty.textContent = t("stats.heat_empty");
     return;
   }
   empty.hidden = true;

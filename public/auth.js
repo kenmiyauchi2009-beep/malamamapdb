@@ -98,9 +98,9 @@ async function renderAuthNav() {
   if (user) {
     // ログイン中はプロフィール（マイページ）へのリンク。ログアウトはマイページ内に置く。
     item.href = "profile.html";
-    item.innerHTML = "マイページ<small>" + userDisplayName(user) + "</small>";
+    item.innerHTML = t("nav.mypage") + "<small>" + userDisplayName(user) + "</small>";
   } else {
-    item.innerHTML = "ログイン<small>Login</small>";
+    item.innerHTML = t("nav.login") + "<small>Login</small>";
     item.href = "login.html";
   }
   nav.appendChild(item);

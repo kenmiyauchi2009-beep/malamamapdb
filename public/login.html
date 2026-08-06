@@ -17,7 +17,7 @@
       <img class="logo" src="favicon.svg" alt="Mālama Map ロゴ" width="30" height="30" />
       <span>
         <span class="title">Mālama Map</span>
-        <span class="tagline">ハワイ在来植物を守る市民マップ</span>
+        <span class="tagline" data-i18n="header.tagline">ハワイ在来植物を守る市民マップ</span>
       </span>
     </a>
     <nav class="main-nav">
@@ -30,25 +30,26 @@
   <main class="report-page">
     <div class="page-intro">
       <h1>ログイン Login</h1>
-      <p>投稿するには Google アカウントでのログインが必要です。</p>
+      <p data-i18n="login.lead">投稿するには Google アカウントでのログインが必要です。</p>
     </div>
 
     <div class="report-form">
       <p id="authError" class="form-error" hidden></p>
 
-      <button type="button" class="submit-btn" id="googleBtn" style="width:100%;">Google でログイン</button>
+      <button type="button" class="submit-btn" id="googleBtn" style="width:100%;" data-i18n="login.google">Google でログイン</button>
 
-      <p class="hint" style="margin-top:16px;text-align:center;">
+      <p class="hint" style="margin-top:16px;text-align:center;" data-i18n="login.hint">
         ログインすると投稿がアカウントに紐づき、地図・図鑑に共有されます。
       </p>
     </div>
   </main>
 
   <footer class="site-footer">
-    Mālama Map — フェーズ2 · アカウントで投稿を共有・保存します
+    Mālama Map — <span data-i18n="footer.login">フェーズ2 · アカウントで投稿を共有・保存します</span>
   </footer>
 
   <script src="config.js"></script>
+  <script src="i18n.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="auth.js"></script>
   <script>

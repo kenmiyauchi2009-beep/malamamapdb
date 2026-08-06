@@ -28,7 +28,7 @@
       <img class="logo" src="favicon.svg" alt="Mālama Map ロゴ" width="30" height="30" />
       <span>
         <span class="title">Mālama Map</span>
-        <span class="tagline">ハワイ在来植物を守る市民マップ</span>
+        <span class="tagline" data-i18n="header.tagline">ハワイ在来植物を守る市民マップ</span>
       </span>
     </a>
     <nav class="main-nav">
@@ -43,7 +43,7 @@
   <main class="report-page">
     <div class="page-intro">
       <h1>目撃を投稿 Report a Sighting</h1>
-      <p>見つけた植物の場所と写真を記録しよう。投稿は地図にすぐ反映されます。</p>
+      <p data-i18n="report.lead">見つけた植物の場所と写真を記録しよう。投稿は地図にすぐ反映されます。</p>
     </div>
 
     <form id="reportForm" class="report-form">
@@ -61,13 +61,13 @@
           />
           <div class="photo-placeholder" id="photoPlaceholder">
             <span class="cam-icon" aria-hidden="true">＋</span>
-            <span>タップして写真を撮る / 選ぶ</span>
+            <span data-i18n="report.photo_tap">タップして写真を撮る / 選ぶ</span>
             <small>Take or choose a photo</small>
           </div>
           <img id="photoPreview" class="photo-preview" alt="プレビュー" hidden />
         </div>
-        <button type="button" id="cropBtn" class="ghost-btn crop-btn" hidden>範囲を選ぶ（複数の植物があるとき）</button>
-        <button type="button" id="clearPhoto" class="link-btn" hidden>写真を消す</button>
+        <button type="button" id="cropBtn" class="ghost-btn crop-btn" hidden data-i18n="report.crop_btn">範囲を選ぶ（複数の植物があるとき）</button>
+        <button type="button" id="clearPhoto" class="link-btn" hidden data-i18n="report.clear_photo">写真を消す</button>
 
         <!-- AI 種提案（BioCLIP）の結果がここに出る -->
         <div id="aiResult" class="ai-result" hidden></div>
@@ -76,13 +76,13 @@
       <!-- 2. 地点を選ぶ -->
       <div class="field">
         <label class="field-label">② 地点 Location</label>
-        <p class="hint">写真に位置情報があれば自動で候補を表示します。地図をタップ／ピンをドラッグで微調整できます。</p>
+        <p class="hint" data-i18n="report.loc_hint">写真に位置情報があれば自動で候補を表示します。地図をタップ／ピンをドラッグで微調整できます。</p>
         <!-- 写真のEXIFから推定した位置の「ここですか？」サジェスト -->
         <div id="exifSuggest" class="exif-suggest" hidden></div>
         <div id="pickMap" class="pick-map"></div>
         <div class="loc-row">
-          <button type="button" id="useGps" class="ghost-btn">現在地を使う</button>
-          <span id="coordLabel" class="coord-label">未選択</span>
+          <button type="button" id="useGps" class="ghost-btn" data-i18n="report.use_gps">現在地を使う</button>
+          <span id="coordLabel" class="coord-label" data-i18n="report.no_coord">未選択</span>
         </div>
       </div>
 
@@ -90,10 +90,10 @@
       <div class="field">
         <label class="field-label" for="plantSelect">③ 植物名 Plant</label>
         <select id="plantSelect" class="text-input" required>
-          <option value="" disabled selected hidden>— 写真を撮ると候補が出ます —</option>
+          <option value="" disabled selected hidden data-i18n="report.plant_ph">— 写真を撮ると候補が出ます —</option>
           <!-- report.js が BioCLIP の候補を入れる -->
         </select>
-        <p class="hint">植物名は <strong>BioCLIP の候補</strong>から選びます。上の候補リストをタップしても選べます。分からなければ「未確認」でOK。</p>
+        <p class="hint" data-i18n-html="report.plant_hint_html">植物名は <strong>BioCLIP の候補</strong>から選びます。上の候補リストをタップしても選べます。分からなければ「未確認」でOK。</p>
       </div>
 
       <!-- 4. メモ -->
@@ -104,30 +104,32 @@
           class="text-input"
           rows="3"
           placeholder="例：葉に黒ずみあり、ROD要観察"
+          data-i18n-ph="report.note_ph"
         ></textarea>
       </div>
 
       <!-- 5. 報告者名（ログインユーザー） -->
       <div class="field">
         <label class="field-label">⑤ 報告者 Reporter</label>
-        <div id="reporterName" class="text-input" style="background:#f4f1ea;color:#555;">
+        <div id="reporterName" class="text-input" style="background:#f4f1ea;color:#555;" data-i18n="report.checking_login">
           ログイン確認中…
         </div>
-        <p class="hint">ログイン中のアカウント名で投稿されます。</p>
+        <p class="hint" data-i18n="report.reporter_hint">ログイン中のアカウント名で投稿されます。</p>
       </div>
 
       <!-- エラー / 送信 -->
       <p id="formError" class="form-error" hidden></p>
-      <button type="submit" class="submit-btn">この内容で投稿する</button>
+      <button type="submit" class="submit-btn" data-i18n="report.submit">この内容で投稿する</button>
     </form>
   </main>
 
   <footer class="site-footer">
-    Mālama Map — フェーズ2 · 投稿はアカウントに紐づき、地図にすぐ共有されます
+    Mālama Map — <span data-i18n="footer.report">フェーズ2 · 投稿はアカウントに紐づき、地図にすぐ共有されます</span>
   </footer>
 
   <!-- 設定 → supabase-js → 認証（requireLogin 用） -->
   <script src="config.js"></script>
+  <script src="i18n.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="auth.js"></script>
   <script

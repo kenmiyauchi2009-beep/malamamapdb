@@ -33,12 +33,12 @@ const plantSelect = document.getElementById("plantSelect");
 // 「未確認」= コミュニティ判定に回す
 const unknownOpt = document.createElement("option");
 unknownOpt.value = "unknown";
-unknownOpt.textContent = "未確認（あとでみんなで判定）";
+unknownOpt.textContent = t("report.unknown_opt");
 plantSelect.appendChild(unknownOpt);
 
 // BioCLIP 候補グループ（最初は空。解析後に埋める）
 const aiGroup = document.createElement("optgroup");
-aiGroup.label = "BioCLIP 候補";
+aiGroup.label = t("ai.candidates");
 aiGroup.hidden = true;
 plantSelect.insertBefore(aiGroup, unknownOpt); // プレースホルダの直後・未確認の前
 
@@ -50,7 +50,7 @@ function fillAiOptions(preds) {
     opt.value = "sp:" + p.name;                 // 候補種は "sp:" 接頭辞
     const common = p.common_name ? "・" + p.common_name : "";
     const m = matchPlant(p.name);
-    const tag = m ? (m.category === "native" ? "［在来］" : "［外来］") : "";
+    const tag = m ? (m.category === "native" ? t("report.native_tag") : t("report.invasive_tag")) : "";
     opt.textContent =
       Math.round(p.score * 100) + "% " + p.name + common + " " + tag;
     aiGroup.appendChild(opt);
@@ -106,7 +106,7 @@ function setLocation(lat, lng) {
 
 function updateCoordLabel() {
   coordLabel.textContent =
-    "選択済: " + chosen.lat.toFixed(4) + ", " + chosen.lng.toFixed(4);
+    t("report.picked", { lat: chosen.lat.toFixed(4), lng: chosen.lng.toFixed(4) });
   coordLabel.classList.add("set");
 }
 
@@ -119,17 +119,17 @@ pickMap.on("click", function (e) {
 // 現在地（GPS）ボタン
 document.getElementById("useGps").addEventListener("click", function () {
   if (!navigator.geolocation) {
-    alert("この端末では現在地を取得できません。地図をタップして選んでください。");
+    alert(t("report.gps_unavailable"));
     return;
   }
-  coordLabel.textContent = "現在地を取得中…";
+  coordLabel.textContent = t("report.gps_loading");
   navigator.geolocation.getCurrentPosition(
     function (pos) {
       const lat = pos.coords.latitude;
       const lng = pos.coords.longitude;
       // ハワイ範囲外（例：日本でテスト中）なら弾く
       if (!ISLANDS_BOUNDS.contains([lat, lng])) {
-        coordLabel.textContent = "現在地がハワイ範囲外です。地図をタップして選んでください。";
+        coordLabel.textContent = t("report.gps_outside");
         return;
       }
       setLocation(lat, lng);
@@ -137,7 +137,7 @@ document.getElementById("useGps").addEventListener("click", function () {
       hideExifSuggest(); // 現在地を使った＝手動確定
     },
     function () {
-      coordLabel.textContent = "現在地の取得に失敗（地図をタップしてください）";
+      coordLabel.textContent = t("report.gps_fail");
     }
   );
 });
@@ -163,7 +163,7 @@ async function readExifLocation(file) {
 
   if (!ISLANDS_BOUNDS.contains([lat, lng])) {
     // ハワイ外の写真 → 手動選択を促す
-    showExifNote("写真の位置がハワイ範囲外でした。地図で選んでください。");
+    showExifNote(t("report.exif_outside"));
     return;
   }
 
@@ -177,9 +177,8 @@ function showExifSuggest() {
   exifSuggest.className = "exif-suggest";
   exifSuggest.hidden = false;
   exifSuggest.innerHTML =
-    '<div class="es-text">写真の場所を検出しました。<strong>ここですか？</strong>' +
-    "<br><small>違う場合は地図をタップ、またはピンをドラッグして調整できます。</small></div>" +
-    '<button type="button" class="es-ok">ここでOK</button>';
+    '<div class="es-text">' + t("report.exif_here") + "</div>" +
+    '<button type="button" class="es-ok">' + t("report.exif_ok") + "</button>";
   exifSuggest.querySelector(".es-ok").addEventListener("click", hideExifSuggest);
 }
 
@@ -277,11 +276,11 @@ function openCropModal(src) {
   overlay.className = "crop-overlay";
   overlay.innerHTML =
     '<div class="crop-modal">' +
-      '<div class="crop-hint">判定したい<strong>1株まるごと</strong>を囲んでください。</div>' +
-      '<div class="crop-stage"><img id="cropImg" src="' + src + '" alt="クロップ対象"></div>' +
+      '<div class="crop-hint">' + t("report.crop_hint_html") + "</div>" +
+      '<div class="crop-stage"><img id="cropImg" src="' + src + '" alt=""></div>' +
       '<div class="crop-actions">' +
-        '<button type="button" class="ghost-btn" id="cropCancel">キャンセル</button>' +
-        '<button type="button" class="submit-btn crop-confirm" id="cropConfirm">この範囲で判定</button>' +
+        '<button type="button" class="ghost-btn" id="cropCancel">' + t("report.crop_cancel") + "</button>" +
+        '<button type="button" class="submit-btn crop-confirm" id="cropConfirm">' + t("report.crop_confirm") + "</button>" +
       "</div>" +
     "</div>";
   document.body.appendChild(overlay);
@@ -363,8 +362,7 @@ async function classifyWithBioCLIP(blob) {
   } catch (err) {
     // サーバー未起動・CORS など → 手動選択にフォールバック
     aiResult.innerHTML =
-      '<div class="ai-error">AI種提案は今は使えません（BioCLIPサーバー未起動の可能性）。' +
-      "手動で植物名を選んでください。</div>";
+      '<div class="ai-error">' + t("ai.unavailable") + t("ai.manual_pick") + "</div>";
   }
 }
 
@@ -374,7 +372,7 @@ function renderAiResult(data) {
   const preds = data.predictions || [];
   lastPreds = preds;
   if (!preds.length) {
-    aiResult.innerHTML = '<div class="ai-error">候補が得られませんでした。</div>';
+    aiResult.innerHTML = '<div class="ai-error">' + t("ai.no_candidates") + "</div>";
     return;
   }
 
@@ -397,34 +395,34 @@ function renderAiResult(data) {
   let verdictHtml;
   if (matchedPlant) {
     const cat = matchedPlant.category === "native" ? "native" : "invasive";
-    const catLabel = cat === "native" ? "在来種 Native" : "外来種 Invasive";
+    const catLabel = cat === "native" ? t("stats.legend_native") : t("stats.legend_invasive");
     verdictHtml =
       '<div class="ai-verdict ' + cat + '">' +
-        matchedPlant.emoji + " AI判定：<strong>" + catLabel + "</strong> — " +
+        t("ai.verdict_prefix") + "<strong>" + catLabel + "</strong> — " +
         matchedPlant.hawaiianName +
-        '<span class="ai-score">確信度 ' + Math.round(matchedPred.score * 100) + "%</span>" +
+        '<span class="ai-score">' + t("ai.confidence", { pct: Math.round(matchedPred.score * 100) }) + "</span>" +
       "</div>";
   } else {
     verdictHtml =
       '<div class="ai-verdict unknown">' +
-        "AI判定：図鑑リストにない種の可能性（" + top.name + "）" +
-        '<span class="ai-score">下から候補を選ぶか、未確認で投稿できます</span>' +
+        t("ai.not_in_list", { name: top.name }) +
+        '<span class="ai-score">' + t("ai.pick_or_unconfirmed") + "</span>" +
       "</div>";
   }
 
   // 確信度が低いときの注意
   const lowNote = top.score < 0.1
-    ? '<div class="ai-lownote">⚠️ 確信度が低めです。葉や花の特徴も現地で確認してください。</div>'
+    ? '<div class="ai-lownote">⚠️ ' + t("ai.low_note") + "</div>"
     : "";
 
   // 候補リスト（クリックで植物名に選択できる）
-  let listHtml = '<div class="ai-list-title">候補をタップして選択 ▼</div>';
+  let listHtml = '<div class="ai-list-title">' + t("ai.tap_to_select") + "</div>";
   preds.forEach(function (p) {
     const pct = Math.round(p.score * 100);
     const m = matchPlant(p.name);
     const tag = m
       ? '<span class="ai-tag ' + m.category + '">' +
-          (m.category === "native" ? "在来" : "外来") + "</span>"
+          (m.category === "native" ? t("stats.ds_native") : t("stats.ds_invasive")) + "</span>"
       : "";
     const common = p.common_name ? " （" + p.common_name + "）" : "";
     // data-sp に "sp:学名" を入れておく → クリックでセレクトに反映
@@ -438,13 +436,13 @@ function renderAiResult(data) {
   // 「未確認」もこの場で選べるように
   listHtml +=
     '<div class="ai-row selectable unknown-row" data-sp="unknown">' +
-      '<div class="ai-row-name">どれでもない／未確認にする</div>' +
+      '<div class="ai-row-name">' + t("ai.none") + "</div>" +
     "</div>";
 
   aiResult.innerHTML =
-    '<div class="ai-head">BioCLIP 種提案</div>' +
+    '<div class="ai-head">' + t("ai.head") + "</div>" +
     verdictHtml + lowNote + listHtml +
-    '<div class="ai-foot">BioCLIP 2.5（ローカルGPUで推論）</div>';
+    '<div class="ai-foot">' + t("ai.foot") + "</div>";
 
   // 候補クリック → 植物名セレクトに反映
   aiResult.querySelectorAll(".ai-row.selectable").forEach(function (row) {
@@ -487,15 +485,15 @@ form.addEventListener("submit", async function (e) {
 
   // 必須チェック：ログイン・地点・植物名
   if (!currentUser) {
-    showError("投稿にはログインが必要です。");
+    showError(t("report.err_login"));
     return;
   }
   if (!chosen) {
-    showError("地点が選ばれていません。地図をタップするか「現在地を使う」を押してください。");
+    showError(t("report.err_no_loc"));
     return;
   }
   if (!plantSelect.value) {
-    showError("植物名を選んでください（分からなければ「未確認」でOK）。");
+    showError(t("report.err_no_plant"));
     return;
   }
 
@@ -523,18 +521,18 @@ form.addEventListener("submit", async function (e) {
   // 送信中はボタンを無効化
   submitBtn.disabled = true;
   const originalLabel = submitBtn.textContent;
-  submitBtn.textContent = "投稿中…";
+  submitBtn.textContent = t("report.submitting");
 
   try {
     // ① 写真があれば Storage にアップロードして URL を得る
     let photoUrl = null;
     if (photoDataUrl) {
-      submitBtn.textContent = "写真をアップロード中…";
+      submitBtn.textContent = t("report.uploading");
       photoUrl = await uploadPhoto(dataUrlToBlob(photoDataUrl));
     }
 
     // ② 投稿を作成（id / reporter / createdAt はサーバーが付与）
-    submitBtn.textContent = "投稿中…";
+    submitBtn.textContent = t("report.submitting");
     const sighting = {
       plantId: plantId,
       speciesName: speciesName,   // BioCLIP が出した学名（あれば）
@@ -542,14 +540,14 @@ form.addEventListener("submit", async function (e) {
       lat: chosen.lat,
       lng: chosen.lng,
       date: new Date().toISOString().slice(0, 10), // YYYY-MM-DD
-      note: document.getElementById("noteInput").value.trim() || "（メモなし）",
+      note: document.getElementById("noteInput").value.trim() || t("report.no_note"),
       photoUrl: photoUrl,         // Storage の URL（写真なしなら null）
     };
     await saveSighting(sighting);
   } catch (err) {
     submitBtn.disabled = false;
     submitBtn.textContent = originalLabel;
-    showError(err && err.message ? err.message : "投稿に失敗しました。時間をおいて再度お試しください。");
+    showError(err && err.message ? err.message : t("report.submit_fail"));
     return;
   }
 
@@ -557,7 +555,7 @@ form.addEventListener("submit", async function (e) {
   if (isNewDiscovery) {
     showDiscoveryPopup(plantId, speciesName, photoDataUrl, discoveredBefore);
   } else {
-    alert("投稿しました！地図に反映されます");
+    alert(t("report.done"));
     window.location.href = "index.html";
   }
 });
@@ -602,16 +600,16 @@ function showDiscoveryPopup(plantId, speciesName, photoUrl, before) {
     else if (k.indexOf("sp:") === 0) communityFound++;
   });
   const progressText = plant
-    ? "図鑑 <strong>" + (curatedFound + 1) + " / " + PLANTS.length + "</strong> 種を発見！"
-    : "コミュニティ発見 <strong>" + (communityFound + 1) + "</strong> 種目！";
+    ? t("discovery.dex", { found: curatedFound + 1, total: PLANTS.length })
+    : t("discovery.community", { n: communityFound + 1 });
 
   // 表示内容
   const name = plant ? plant.hawaiianName : speciesName;
   const sci = plant ? plant.scientificName : speciesName;
   const badge = plant
     ? '<span class="badge ' + plant.status + '">' +
-        (plant.category === "native" ? "在来種 Native" : "外来種 Invasive") + "</span>"
-    : '<span class="badge">コミュニティ発見</span>';
+        (plant.category === "native" ? t("stats.legend_native") : t("stats.legend_invasive")) + "</span>"
+    : '<span class="badge">' + t("plants.community_tag") + "</span>";
 
   // 写真（投稿写真 → 図鑑写真 → 絵文字ブロック）
   const imgSrc = photoUrl || (plant ? plant.imageUrl : null);
@@ -625,15 +623,15 @@ function showDiscoveryPopup(plantId, speciesName, photoUrl, before) {
   overlay.innerHTML =
     '<div class="discovery-card">' +
       '<div class="disc-sparkles">❦</div>' +
-      '<div class="disc-title">じゃじゃーん！新種発見</div>' +
+      '<div class="disc-title">' + t("discovery.title") + "</div>" +
       '<div class="disc-photo">' + photoHtml + "</div>" +
       '<div class="disc-name">' + name + "</div>" +
       '<div class="disc-sci">' + sci + "</div>" +
       '<div class="disc-badges">' + badge + "</div>" +
       '<div class="disc-progress">' + progressText + "</div>" +
       '<div class="disc-actions">' +
-        '<button type="button" class="disc-btn primary" data-go="index.html">地図で見る</button>' +
-        '<button type="button" class="disc-btn" data-go="plants.html">図鑑で見る</button>' +
+        '<button type="button" class="disc-btn primary" data-go="index.html">' + t("discovery.to_map") + "</button>" +
+        '<button type="button" class="disc-btn" data-go="plants.html">' + t("discovery.to_dex") + "</button>" +
       "</div>" +
     "</div>";
   document.body.appendChild(overlay);

@@ -88,7 +88,7 @@ function createCard(plant, discovered, postedPhoto) {
   // 発見状態タグ（🔓/🔒）
   const state = document.createElement("span");
   state.className = "dex-state " + (discovered ? "found" : "locked");
-  state.textContent = discovered ? "発見済み" : "未発見";
+  state.textContent = discovered ? t("plants.bar_discovered") : t("plants.find_hint");
   photo.appendChild(state);
 
   const body = document.createElement("div");
@@ -119,19 +119,19 @@ function createCommunityCard(sp) {
 
   const catTag = document.createElement("span");
   catTag.className = "cat-tag community";
-  catTag.textContent = "コミュニティ発見";
+  catTag.textContent = t("plants.community_tag");
   photo.appendChild(catTag);
 
   const state = document.createElement("span");
   state.className = "dex-state found";
-  state.textContent = "発見 ×" + sp.count;
+  state.textContent = t("plants.found_x", { n: sp.count });
   photo.appendChild(state);
 
   const body = document.createElement("div");
   body.className = "plant-body";
   body.innerHTML =
     '<div class="haw-name">' + sp.name + "</div>" +
-    '<div class="sci-name">未分類 Unverified</div>';
+    '<div class="sci-name">' + t("plants.unverified") + "</div>";
 
   card.appendChild(photo);
   card.appendChild(body);
@@ -181,9 +181,7 @@ function renderCards(filter) {
 
   // 1件も無ければ空状態を表示
   if (!grid.children.length) {
-    grid.innerHTML =
-      '<p class="dex-empty">まだ発見された植物がありません。' +
-      '<a href="report.html">投稿</a>すると図鑑に追加されます。</p>';
+    grid.innerHTML = '<p class="dex-empty">' + t("plants.empty") + "</p>";
   }
 
   updateProgress(dex);
@@ -211,14 +209,14 @@ function updateProgress(dex) {
 
   dexProgress.innerHTML =
     '<div class="dex-bar-row">' +
-      '<span class="dex-bar-label">発見 Discovered</span>' +
+      '<span class="dex-bar-label">' + t("plants.bar_discovered") + "</span>" +
       '<span class="dex-bar-track">' +
         '<span class="dex-bar"><span class="dex-bar-fill native" style="width:' + pct + '%"></span></span>' +
         '<span class="dex-bar-pct">' + found + " / " + BIOCLIP_TOTAL_SPECIES + " ・ " + pct + "%</span>" +
       "</span>" +
     "</div>" +
     (communityFound
-      ? '<div class="dex-community">コミュニティ発見 <strong>' + communityFound + "</strong> 種</div>"
+      ? '<div class="dex-community">' + t("plants.community_count", { n: communityFound }) + "</div>"
       : "");
 }
 
@@ -250,8 +248,8 @@ function openPlantDetail(plant, discovered, postedPhoto) {
   const catLabel = plant.category === "native" ? "在来種 Native" : "外来種 Invasive";
   let tags = '<span class="cat-tag ' + plant.category + '" style="position:static">' + catLabel + "</span> ";
   tags += '<span class="badge ' + plant.status + '">' + plant.statusLabel + "</span>";
-  if (plant.rodRisk)    tags += ' <span class="badge rod">ROD 要観察</span>';
-  if (plant.isKeystone) tags += ' <span class="badge keystone">キーストーン種</span>';
+  if (plant.rodRisk)    tags += ' <span class="badge rod">' + t("map.rod_watch") + "</span>";
+  if (plant.isKeystone) tags += ' <span class="badge keystone">' + t("plants.keystone") + "</span>";
 
   renderDetail({
     photoSrc: photoSrc,
@@ -262,7 +260,7 @@ function openPlantDetail(plant, discovered, postedPhoto) {
     eng: "English: " + plant.englishName,
     badges: tags,
     desc: plant.description,
-    cultural: "<strong>文化・豆知識:</strong> " + plant.culturalNote,
+    cultural: "<strong>" + t("plants.cultural") + "</strong> " + plant.culturalNote,
     sightings: sightings,
     markerColor: plant.category === "native" ? "#2d6a4f" : "#c1272d"
   });
@@ -280,9 +278,9 @@ function openCommunityDetail(sp) {
     name: sp.name,
     sci: sp.name,
     eng: "",
-    badges: '<span class="badge">コミュニティ発見</span> <span class="badge">未分類 Unverified</span>',
-    desc: "コミュニティの投稿で見つかった種です。BioCLIP が判定しました。",
-    cultural: "<strong>メモ:</strong> 在来/外来の分類は今後コミュニティで確認されます。",
+    badges: '<span class="badge">' + t("plants.community_tag") + '</span> <span class="badge">' + t("plants.unverified") + "</span>",
+    desc: t("plants.community_desc"),
+    cultural: "<strong>" + t("plants.memo") + "</strong> " + t("plants.community_memo"),
     sightings: sightings,
     markerColor: "#6b7280"
   });
@@ -311,13 +309,13 @@ function renderDetail(d) {
         "</li>";
     });
     sightHtml =
-      '<h4>目撃情報 <span>（' + d.sightings.length + "件・最終 " + last + "）</span></h4>" +
+      "<h4>" + t("plants.detail_sightings") + " <span>" + t("plants.sightings_count", { n: d.sightings.length, last: last }) + "</span></h4>" +
       '<div class="detail-map" id="detailMap"></div>' +
       '<ul class="detail-sight-list">' + list + "</ul>";
   } else {
     sightHtml =
-      '<h4>目撃情報</h4>' +
-      '<div class="detail-empty">まだ目撃報告がありません。見つけて投稿しよう！</div>';
+      "<h4>" + t("plants.detail_sightings") + "</h4>" +
+      '<div class="detail-empty">' + t("plants.detail_empty") + "</div>";
   }
 
   const overlay = document.createElement("div");

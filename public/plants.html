@@ -26,7 +26,7 @@
       <img class="logo" src="favicon.svg" alt="Mālama Map ロゴ" width="30" height="30" />
       <span>
         <span class="title">Mālama Map</span>
-        <span class="tagline">ハワイ在来植物を守る市民マップ</span>
+        <span class="tagline" data-i18n="header.tagline">ハワイ在来植物を守る市民マップ</span>
       </span>
     </a>
     <nav class="main-nav">
@@ -41,7 +41,7 @@
   <main class="plants-page">
     <div class="page-intro">
       <h1>植物図鑑 Plants</h1>
-      <p>ハワイの在来種と、森を脅かす外来種。見つけて投稿すると図鑑が埋まっていきます。</p>
+      <p data-i18n="plants.lead">ハワイの在来種と、森を脅かす外来種。見つけて投稿すると図鑑が埋まっていきます。</p>
       <div class="dex-progress" id="dexProgress"></div>
     </div>
 
@@ -57,11 +57,12 @@
   </main>
 
   <footer class="site-footer">
-    Mālama Map — 市民科学でハワイの森を守る · みんなの投稿を共有
+    Mālama Map — <span data-i18n="footer.community">市民科学でハワイの森を守る · みんなの投稿を共有</span>
   </footer>
 
   <!-- 設定 → supabase-js → 認証 → Leaflet → データ → 図鑑ロジック -->
   <script src="config.js"></script>
+  <script src="i18n.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="auth.js"></script>
   <script

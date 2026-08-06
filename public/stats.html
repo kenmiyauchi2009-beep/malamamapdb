@@ -19,7 +19,7 @@
       <img class="logo" src="favicon.svg" alt="Mālama Map ロゴ" width="30" height="30" />
       <span>
         <span class="title">Mālama Map</span>
-        <span class="tagline">ハワイ在来植物を守る市民マップ</span>
+        <span class="tagline" data-i18n="header.tagline">ハワイ在来植物を守る市民マップ</span>
       </span>
     </a>
     <nav class="main-nav">
@@ -33,8 +33,8 @@
   <main class="plants-page">
     <div class="page-intro">
       <h1>統計 Stats</h1>
-      <p>みんなの投稿から、在来種と外来種の傾向を読み解きます。</p>
-      <p class="stats-note">
+      <p data-i18n="stats.lead">みんなの投稿から、在来種と外来種の傾向を読み解きます。</p>
+      <p class="stats-note" data-i18n-html="stats.note_html">
         ※ ここに出るのは <strong>観測トレンド（目撃報告数）</strong> であり、植物の実際の個体数ではありません。
         報告数は観測者・投稿の増減にも左右されるため、構成比や地点数など「努力に左右されにくい指標」を重視しています。
       </p>
@@ -42,17 +42,17 @@
 
     <!-- タブ -->
     <div class="stats-tabs" id="statsTabs">
-      <button class="tab-btn active" data-tab="summary">サマリー</button>
-      <button class="tab-btn" data-tab="trend">トレンド</button>
-      <button class="tab-btn" data-tab="ranking">ランキング</button>
-      <button class="tab-btn" data-tab="heat">ヒートマップ</button>
+      <button class="tab-btn active" data-tab="summary" data-i18n="stats.tab_summary">サマリー</button>
+      <button class="tab-btn" data-tab="trend" data-i18n="stats.tab_trend">トレンド</button>
+      <button class="tab-btn" data-tab="ranking" data-i18n="stats.tab_ranking">ランキング</button>
+      <button class="tab-btn" data-tab="heat" data-i18n="stats.tab_heat">ヒートマップ</button>
     </div>
 
     <!-- パネル：サマリー -->
     <section class="stats-panel active" id="panel-summary">
       <div class="kpi-grid" id="kpiGrid"></div>
       <div class="chart-box">
-        <h3 class="chart-title">在来 vs 外来（報告数の構成比）</h3>
+        <h3 class="chart-title" data-i18n="stats.comp_title">在来 vs 外来（報告数の構成比）</h3>
         <div class="chart-canvas-wrap"><canvas id="chartComposition"></canvas></div>
       </div>
     </section>
@@ -60,12 +60,12 @@
     <!-- パネル：トレンド -->
     <section class="stats-panel" id="panel-trend">
       <div class="chart-box">
-        <h3 class="chart-title">月別 目撃報告数（観測トレンド）</h3>
+        <h3 class="chart-title" data-i18n="stats.monthly_title">月別 目撃報告数（観測トレンド）</h3>
         <div id="trendGuard" class="stats-empty" hidden></div>
         <div class="chart-canvas-wrap"><canvas id="chartMonthly"></canvas></div>
       </div>
       <div class="chart-box">
-        <h3 class="chart-title">在来 vs 外来 シェアの推移</h3>
+        <h3 class="chart-title" data-i18n="stats.share_title">在来 vs 外来 シェアの推移</h3>
         <div class="chart-canvas-wrap"><canvas id="chartShare"></canvas></div>
       </div>
     </section>
@@ -73,11 +73,11 @@
     <!-- パネル：ランキング -->
     <section class="stats-panel" id="panel-ranking">
       <div class="chart-box">
-        <h3 class="chart-title">よく報告される種 トップ</h3>
+        <h3 class="chart-title" data-i18n="stats.top_title">よく報告される種 トップ</h3>
         <div id="rankList" class="rank-list"></div>
       </div>
       <div class="chart-box">
-        <h3 class="chart-title">前期比の増減（直近 vs その前）</h3>
+        <h3 class="chart-title" data-i18n="stats.change_title">前期比の増減（直近 vs その前）</h3>
         <div id="changeGuard" class="stats-empty" hidden></div>
         <div id="changeList" class="rank-list"></div>
       </div>
@@ -86,14 +86,14 @@
     <!-- パネル：ヒートマップ -->
     <section class="stats-panel" id="panel-heat">
       <div class="heat-filters" id="heatFilters">
-        <button class="filter-btn active" data-heat="all">すべて</button>
-        <button class="filter-btn" data-heat="native">在来</button>
-        <button class="filter-btn" data-heat="invasive">外来</button>
-        <button class="filter-btn" data-heat="rod">ROD</button>
+        <button class="filter-btn active" data-heat="all" data-i18n="stats.heat_all">すべて</button>
+        <button class="filter-btn" data-heat="native" data-i18n="stats.heat_native">在来</button>
+        <button class="filter-btn" data-heat="invasive" data-i18n="stats.heat_invasive">外来</button>
+        <button class="filter-btn" data-heat="rod" data-i18n="stats.heat_rod">ROD</button>
       </div>
       <div id="heatEmpty" class="stats-empty" hidden></div>
       <div id="heatMap" class="heat-map"></div>
-      <p class="stats-note">
+      <p class="stats-note" data-i18n="stats.heat_note">
         濃いほど目撃報告が集中している場所です（＝観測トレンド。植物の個体数ではありません）。
         希少種は将来的に座標をぼかして表示します。
       </p>
@@ -101,10 +101,11 @@
   </main>
 
   <footer class="site-footer">
-    Mālama Map — 市民科学でハワイの森を守る · 数値は観測トレンド（目撃報告数）
+    Mālama Map — <span data-i18n="footer.stats">市民科学でハワイの森を守る · 数値は観測トレンド（目撃報告数）</span>
   </footer>
 
   <script src="config.js"></script>
+  <script src="i18n.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="auth.js"></script>
   <!-- Leaflet + Leaflet.heat（ヒートマップ用） -->
