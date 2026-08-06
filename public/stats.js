@@ -259,6 +259,61 @@ function renderRanking(a) {
   }).join("");
 }
 
+/* ---------- タブ4：ヒートマップ（Leaflet + Leaflet.heat） ---------- */
+let heatMap = null, heatLayer = null, heatFilter = "all";
+
+// フィルタに応じて [lat, lng, 強度] の配列を作る
+function heatPoints(filter) {
+  const pts = [];
+  getAllSightings().forEach(function (s) {
+    if (s.lat == null || s.lng == null) return;
+    const plant = getPlantById(s.plantId);
+    const category = plant ? plant.category : "community";
+    if (filter === "native" && category !== "native") return;
+    if (filter === "invasive" && category !== "invasive") return;
+    if (filter === "rod" && !(plant && plant.rodRisk)) return;
+    pts.push([s.lat, s.lng, 0.6]);
+  });
+  return pts;
+}
+
+function updateHeat() {
+  if (!heatMap) return;
+  const empty = document.getElementById("heatEmpty");
+  if (heatLayer) { heatMap.removeLayer(heatLayer); heatLayer = null; }
+  const pts = heatPoints(heatFilter);
+  if (!pts.length) {
+    empty.hidden = false;
+    empty.textContent = "この条件の投稿がまだありません。";
+    return;
+  }
+  empty.hidden = true;
+  heatLayer = L.heatLayer(pts, { radius: 25, blur: 18, maxZoom: 12, minOpacity: 0.35 }).addTo(heatMap);
+}
+
+// 地図は「タブが初めて表示された時」に作る（非表示中は 0px で壊れるため）
+function initHeatMap() {
+  if (heatMap) return;
+  const ISLANDS = L.latLngBounds([18.4, -160.6], [22.6, -154.5]);
+  const PAN = L.latLngBounds([13.0, -166.0], [27.5, -149.0]);
+  heatMap = L.map("heatMap", { maxBounds: PAN, maxBoundsViscosity: 1.0, minZoom: 5, maxZoom: 14 });
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: "&copy; OpenStreetMap contributors",
+  }).addTo(heatMap);
+  heatMap.fitBounds(ISLANDS, { padding: [20, 20] });
+  updateHeat();
+}
+
+document.getElementById("heatFilters").addEventListener("click", function (e) {
+  const b = e.target.closest(".filter-btn");
+  if (!b) return;
+  heatFilter = b.dataset.heat;
+  document.querySelectorAll("#heatFilters .filter-btn").forEach(function (x) {
+    x.classList.toggle("active", x === b);
+  });
+  updateHeat();
+});
+
 /* ---------- タブ切替 ---------- */
 document.getElementById("statsTabs").addEventListener("click", function (e) {
   const btn = e.target.closest(".tab-btn");
@@ -272,6 +327,11 @@ document.getElementById("statsTabs").addEventListener("click", function (e) {
   });
   // 非表示中に作った Chart は 0px で描かれるので、表示時に再計算
   (chartsByTab[tab] || []).forEach(function (ch) { if (ch) ch.resize(); });
+  // ヒートマップは表示されたタイミングで初期化＆サイズ再計算
+  if (tab === "heat") {
+    initHeatMap();
+    setTimeout(function () { if (heatMap) heatMap.invalidateSize(); }, 60);
+  }
 });
 
 /* ---------- 初期化：投稿を取得してから描画 ---------- */

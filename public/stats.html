@@ -8,6 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,600&display=swap" rel="stylesheet" />
+  <!-- Leaflet（ヒートマップ用） -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -43,6 +45,7 @@
       <button class="tab-btn active" data-tab="summary">サマリー</button>
       <button class="tab-btn" data-tab="trend">トレンド</button>
       <button class="tab-btn" data-tab="ranking">ランキング</button>
+      <button class="tab-btn" data-tab="heat">ヒートマップ</button>
     </div>
 
     <!-- パネル：サマリー -->
@@ -79,6 +82,22 @@
         <div id="changeList" class="rank-list"></div>
       </div>
     </section>
+
+    <!-- パネル：ヒートマップ -->
+    <section class="stats-panel" id="panel-heat">
+      <div class="heat-filters" id="heatFilters">
+        <button class="filter-btn active" data-heat="all">すべて</button>
+        <button class="filter-btn" data-heat="native">在来</button>
+        <button class="filter-btn" data-heat="invasive">外来</button>
+        <button class="filter-btn" data-heat="rod">ROD</button>
+      </div>
+      <div id="heatEmpty" class="stats-empty" hidden></div>
+      <div id="heatMap" class="heat-map"></div>
+      <p class="stats-note">
+        濃いほど目撃報告が集中している場所です（＝観測トレンド。植物の個体数ではありません）。
+        希少種は将来的に座標をぼかして表示します。
+      </p>
+    </section>
   </main>
 
   <footer class="site-footer">
@@ -88,6 +107,9 @@
   <script src="config.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="auth.js"></script>
+  <!-- Leaflet + Leaflet.heat（ヒートマップ用） -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="https://cdn.jsdelivr.net/npm/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
   <script src="data.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
   <script src="stats.js"></script>

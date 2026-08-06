@@ -327,6 +327,13 @@ h1, h2, h3, h4 { font-family: var(--serif); font-weight: 600; }
   background: var(--lehua); color: #fff; border-radius: 3px; padding: 0.05rem 0.4rem; margin-left: 0.3rem;
 }
 
+/* ヒートマップ */
+.heat-filters { display: flex; gap: 0.45rem; margin-bottom: 1rem; flex-wrap: wrap; }
+.heat-map {
+  height: 460px; border-radius: var(--radius);
+  border: 1px solid var(--rule); box-shadow: var(--shadow); z-index: 1;
+}
+
 /* ---------- マイページ（プロフィール） ---------- */
 .profile-head {
   display: flex;
