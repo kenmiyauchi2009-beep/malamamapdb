@@ -218,6 +218,9 @@
     "profile.logout": { ja: "ログアウト", en: "Log out" },
     "profile.stats": { ja: "発見 {species} 種 ・ 投稿 {reports} 件", en: "{species} species found · {reports} reports" },
     "profile.empty": { ja: "まだ植物を投稿していません。<a href=\"report.html\">投稿</a>すると、ここに記録が残ります。", en: "You haven't reported any plants yet. <a href=\"report.html\">Report</a> one to start your record." },
+    "profile.empty_other": { ja: "このユーザーはまだ植物を投稿していません。", en: "This user hasn't reported any plants yet." },
+    "profile.finds_mine": { ja: "見つけた植物 My Finds", en: "My Finds" },
+    "profile.finds_other": { ja: "{name} の発見", en: "{name}'s Finds" },
     "profile.unconfirmed": { ja: "未確認", en: "Unconfirmed" },
 
     // ログイン

@@ -362,7 +362,8 @@ function renderDetail(d) {
       list +=
         '<li>' + photo +
           '<span class="ds-note">' + s.note + "</span>" +
-          '<span class="ds-meta">' + s.date + " ・ " + s.reporter + "</span>" +
+          '<span class="ds-meta">' + s.date + ' ・ <a class="reporter-link" href="profile.html?user=' +
+            encodeURIComponent(s.reporter) + '">' + s.reporter + "</a></span>" +
         "</li>";
     });
     sightHtml =

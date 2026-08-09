@@ -424,6 +424,10 @@ h1, h2, h3, h4 { font-family: var(--serif); font-weight: 600; }
   border: 1px solid var(--rule); box-shadow: var(--shadow); z-index: 1;
 }
 
+/* 投稿者名のリンク（クリックでその人のプロフィールへ） */
+.reporter-link { color: var(--forest); text-decoration: underline; text-underline-offset: 2px; }
+.reporter-link:hover { color: var(--lehua); }
+
 /* ---------- マイページ（プロフィール） ---------- */
 .profile-head {
   display: flex;

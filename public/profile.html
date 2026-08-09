@@ -38,18 +38,15 @@
       <div class="profile-avatar" id="pAvatar" aria-hidden="true"></div>
       <div class="profile-info">
         <div class="profile-name" id="pName">—</div>
-        <div class="profile-meta">
-          <span id="pEmail"></span>
-        </div>
-        <div class="profile-meta">
+        <div class="profile-meta" id="pJoinedRow">
           <span data-i18n="profile.joined">参加日</span> <span id="pJoined">—</span>
         </div>
         <div class="profile-stats" id="pStats">—</div>
       </div>
-      <button type="button" id="logoutBtn" class="ghost-btn" data-i18n="profile.logout">ログアウト</button>
+      <button type="button" id="logoutBtn" class="ghost-btn" data-i18n="profile.logout" hidden>ログアウト</button>
     </section>
 
-    <h2 class="profile-section-title">見つけた植物 My Finds</h2>
+    <h2 class="profile-section-title" id="findsTitle">見つけた植物 My Finds</h2>
     <div class="plant-grid" id="myFinds"></div>
   </main>
 
@@ -63,27 +60,45 @@
   <script src="auth.js"></script>
   <script src="data.js"></script>
   <script>
-    // ログイン必須（未ログインなら login.html へ退避）
-    requireLogin().then(async function (user) {
-      if (!user) return;
+    // ?user=<投稿者名> があれば「他人の公開プロフィール」、無ければ「自分のプロフィール」
+    const viewUser = new URLSearchParams(location.search).get("user");
+    if (viewUser) {
+      renderProfile(viewUser, false, null);               // 公開ビュー（ログイン不要）
+    } else {
+      requireLogin().then(function (user) {               // 自分（ログイン必須）
+        if (user) renderProfile(userDisplayName(user), true, user);
+      });
+    }
 
+    async function renderProfile(name, isOwn, user) {
       // ---- プロフィール概要 ----
-      const name = userDisplayName(user);
       document.getElementById("pName").textContent = name;
-      document.getElementById("pEmail").textContent = user.email || "";
-      // アバターは名前の頭文字
       document.getElementById("pAvatar").textContent = (name[0] || "?").toUpperCase();
-      // 参加日（Supabase の created_at）
-      const joined = user.created_at ? new Date(user.created_at) : null;
-      document.getElementById("pJoined").textContent = joined
-        ? joined.toLocaleDateString(window.LANG === "ja" ? "ja-JP" : "en-US", { year: "numeric", month: "long", day: "numeric" })
-        : "—";
 
-      // ---- 自分の投稿を集計 ----
+      // 見出し（自分＝My Finds / 他人＝〇〇の発見）
+      document.getElementById("findsTitle").textContent =
+        isOwn ? t("profile.finds_mine") : t("profile.finds_other", { name: name });
+
+      // 参加日は自分のみ（他人のアカウント作成日は取得できないので隠す）
+      if (isOwn && user && user.created_at) {
+        document.getElementById("pJoined").textContent = new Date(user.created_at)
+          .toLocaleDateString(window.LANG === "ja" ? "ja-JP" : "en-US", { year: "numeric", month: "long", day: "numeric" });
+      } else {
+        document.getElementById("pJoinedRow").hidden = true;
+      }
+
+      // ログアウトは自分のみ表示
+      if (isOwn) {
+        const lo = document.getElementById("logoutBtn");
+        lo.hidden = false;
+        lo.addEventListener("click", function () { signOut(); });
+      }
+
+      // ---- 投稿を集計（自分は user_id 優先、他人は投稿者名で一致） ----
       await loadSightings();
       const mine = getAllSightings().filter(function (s) {
-        // user_id があれば厳密一致、無ければ表示名で判定
-        return (s.user_id && s.user_id === user.id) || s.reporter === name;
+        if (isOwn && user) return (s.user_id && s.user_id === user.id) || s.reporter === name;
+        return s.reporter === name;
       });
 
       // 種ごとにまとめる（骨格種は id、コミュニティ種は学名でキー化）
@@ -113,7 +128,8 @@
       // ---- 発見した植物カード ----
       const grid = document.getElementById("myFinds");
       if (!species.length) {
-        grid.innerHTML = '<p class="dex-empty">' + t("profile.empty") + "</p>";
+        grid.innerHTML = '<p class="dex-empty">' +
+          (isOwn ? t("profile.empty") : t("profile.empty_other")) + "</p>";
         return;
       }
       // 発見数が多い順
@@ -154,12 +170,7 @@
 
         grid.appendChild(card);
       });
-    });
-
-    // ログアウト
-    document.getElementById("logoutBtn").addEventListener("click", function () {
-      signOut();
-    });
+    }
   </script>
 </body>
 </html>

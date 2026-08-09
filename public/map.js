@@ -90,8 +90,8 @@ function popupHtml(plant, sighting) {
       "</div>" +
       photo +
       '<div class="popup-note">「' + sighting.note + "」</div>" +
-      '<div class="popup-meta">' + catLabel + " ・ " + sighting.date +
-        " ・ " + sighting.reporter + "</div>" +
+      '<div class="popup-meta">' + catLabel + " ・ " + sighting.date + " ・ " +
+        '<a class="reporter-link" href="profile.html?user=' + encodeURIComponent(sighting.reporter) + '">' + sighting.reporter + "</a></div>" +
     "</div>"
   );
 }
@@ -147,10 +147,13 @@ function renderFeed() {
       "</div>" +
       photo +
       '<div class="fc-note">' + s.note + "</div>" +
-      '<div class="fc-meta"><span>' + s.date + "</span><span>" + s.reporter + "</span></div>";
+      '<div class="fc-meta"><span>' + s.date + '</span><span><a class="reporter-link" href="profile.html?user=' +
+        encodeURIComponent(s.reporter) + '">' + s.reporter + "</a></span></div>";
 
     // カードをクリック → 地図をそのピンへ移動してポップアップを開く
-    card.addEventListener("click", function () {
+    // （投稿者名リンクをタップしたときは地図移動せずプロフィールへ）
+    card.addEventListener("click", function (e) {
+      if (e.target.closest("a")) return;
       map.setView([s.lat, s.lng], 11, { animate: true });
       const m = markersById[s.id];
       if (m) m.openPopup();
