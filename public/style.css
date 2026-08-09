@@ -6,6 +6,24 @@
      - タグは標本ラベル風（小文字大文字・字間・角ばり）
    ============================================================ */
 
+/* ------------------------------------------------------------
+   Hawaiian の長音符付き母音（ā ē ī ō ū = U+0100–017F）だけを
+   マクロンの位置が正しい Latin フォント(Georgia/Arial)で描画するためのシム。
+   Fraunces は ā のマクロンをズラして描画し "Mālama" が "Matama" に化けるため、
+   この範囲のコードポイントだけ Fraunces を使わせず Georgia 等に固定する。
+   unicode-range で対象文字に限定 → 他の文字（英字・オキナ ʻ U+02BB・日本語）は元のフォントのまま。
+   ------------------------------------------------------------ */
+@font-face {
+  font-family: "MacronFixSerif";
+  src: local("Georgia"), local("Times New Roman"), local("Times");
+  unicode-range: U+0100-017F;
+}
+@font-face {
+  font-family: "MacronFixSans";
+  src: local("Arial"), local("Helvetica Neue"), local("Segoe UI");
+  unicode-range: U+0100-017F;
+}
+
 :root {
   /* 色：ハーバリウム（押し葉標本）の落ち着いた自然色 */
   --forest:        #234b3a;   /* ハーバリウム緑（メイン） */
@@ -29,13 +47,12 @@
   --radius:        7px;
   --radius-lg:     10px;
 
-  /* セリフ体（見出し・種名・学名）／ 本文サンセリフ */
-  /* Georgia / Times は「Latin用のフォールバック」を日本語明朝より前に置く。
-     こうすると ā(U+0101) が Fraunces に無い環境でも日本語明朝でなく Georgia で描画され、
-     マクロン（ā の上の棒）が正しい位置に乗る（"Mālama" の l が t に化けるのを防ぐ）。
-     日本語の文字は Georgia/Times に無いので、そのまま Hiragino/Yu Mincho へフォールバックする。 */
-  --serif: "Fraunces", Georgia, "Times New Roman", "Hiragino Mincho ProN", "Yu Mincho", "YuMincho", serif;
-  --sans:  "Hiragino Sans", "Yu Gothic", "Segoe UI", system-ui, "Helvetica Neue", sans-serif;
+  /* セリフ体（見出し・種名・学名）／ 本文サンセリフ
+     先頭の MacronFix* は上の @font-face で U+0100–017F だけに効く＝ ā ē ī ō ū を
+     Fraunces/日本語フォントでなく Georgia/Arial で描画し、マクロンのズレを防ぐ。
+     その範囲外の文字はスキップされ、次の Fraunces / 日本語フォントが使われる。 */
+  --serif: "MacronFixSerif", "Fraunces", Georgia, "Times New Roman", "Hiragino Mincho ProN", "Yu Mincho", "YuMincho", serif;
+  --sans:  "MacronFixSans", "Hiragino Sans", "Yu Gothic", "Segoe UI", system-ui, "Helvetica Neue", sans-serif;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
