@@ -908,3 +908,94 @@ select.text-input { cursor: pointer; }
 .popup-sci { font-family: var(--serif); font-style: italic; font-size: 0.75rem; color: var(--text-soft); }
 .popup-note { font-size: 0.82rem; margin: 0.4rem 0; }
 .popup-meta { font-size: 0.7rem; color: var(--text-soft); }
+
+/* ============================================================
+   モバイル仕上げ（スマホ＝640px 以下）
+   ------------------------------------------------------------
+   ・ヘッダーをスリム化（タグライン非表示）
+   ・上部ナビ .main-nav を「画面下固定のボトムナビ」へ変形（CSSのみ・HTML無編集）
+     アイコンは href 一致の ::before で注入するため、認証項目(auth.js)にも自動で付く
+   ・地図の高さ／フィードの二重スクロール／iOS入力ズーム／タップ領域 を調整
+   既存の 880px（.layout 1カラム化）はそのまま活かし、640以下でさらにモバイル最適化する。
+   ============================================================ */
+@media (max-width: 640px) {
+
+  /* --- 1. ヘッダーをスリムに（ロゴ＋タイトル＋地球儀だけの1行） --- */
+  .site-header { padding: 0.55rem 0.9rem; }
+  .brand .tagline { display: none; }        /* 英サブタイトルは隠す */
+  .brand .title { font-size: 1.15rem; }
+
+  /* --- 2. .main-nav を画面下固定のボトムナビへ --- */
+  .main-nav {
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    margin: 0;
+    z-index: 1000;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-around;
+    gap: 0;
+    padding: 0;
+    background: var(--card);
+    border-top: 1px solid var(--rule);
+    box-shadow: 0 -2px 8px rgba(43, 42, 38, 0.08);
+    /* iPhone のホームバー分の余白 */
+    padding-bottom: env(safe-area-inset-bottom, 0);
+  }
+  .main-nav a {
+    flex: 1;
+    min-height: 52px;               /* タップ領域を確保 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    padding: 6px 2px;
+    font-size: 0.66rem;
+    line-height: 1.1;
+    text-align: center;
+  }
+  .main-nav a small { display: none; }        /* 英語サブラベルは隠す＝日本語のみ */
+
+  /* アイコン注入（href 先頭一致・この画面幅でのみ表示） */
+  .main-nav a::before {
+    font-size: 1.2rem;
+    line-height: 1;
+  }
+  .main-nav a[href^="map"]::before     { content: "🗺️"; }
+  .main-nav a[href^="plants"]::before  { content: "📖"; }
+  .main-nav a[href^="report"]::before  { content: "📷"; }
+  .main-nav a[href^="stats"]::before   { content: "📊"; }
+  .main-nav a[href^="profile"]::before,
+  .main-nav a[href^="login"]::before   { content: "👤"; }
+
+  /* アクティブ表示はバー用に調整（デスクトップの下線は消す） */
+  .main-nav a.active { color: var(--lehua); box-shadow: none; }
+
+  /* ボトムナビに隠れないよう本文へ余白 */
+  body { padding-bottom: calc(64px + env(safe-area-inset-bottom, 0)); }
+
+  /* --- 3. 地図ページ：高さとフィードのスクロール --- */
+  #map {
+    /* スリムヘッダー＋下部バー分を差し引く。dvh でアドレスバー変動に対応 */
+    height: calc(100dvh - 120px);
+    min-height: 320px;
+  }
+  .feed {
+    /* 1カラム時は内側スクロールをやめてページスクロールに一体化（二重スクロール解消） */
+    max-height: none;
+    overflow-y: visible;
+    padding-right: 0;
+  }
+
+  /* --- 4. iOS のフォーカス自動ズーム対策（入力を16px以上に） --- */
+  .text-input,
+  textarea.text-input,
+  select.text-input { font-size: 16px; }
+
+  /* --- 5. 細かなタップ領域／窮屈さ --- */
+  .detail-close { width: 44px; height: 44px; }
+  .rank-row        { grid-template-columns: 84px 1fr auto; }
+  .rank-row.change { grid-template-columns: 84px auto 1fr; }
+  .heat-map { height: 380px; }
+}
