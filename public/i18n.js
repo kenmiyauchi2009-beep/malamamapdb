@@ -6,8 +6,10 @@
    ・setLang(lang) … 記憶してページ再読込（全動的表示も新言語で描き直す）
    ・DOM の [data-i18n]（textContent）/ [data-i18n-html]（innerHTML）/
      [data-i18n-ph]（placeholder）を自動翻訳
-   ・ヘッダーに JA/EN トグルを自動挿入
-   初期言語：localStorage → ブラウザ言語（ja*→日本語, それ以外→英語）
+   ・ヘッダーに EN/JA トグルを自動挿入
+   初期言語：localStorage（ユーザーが選んだ言語）を最優先。無ければ既定＝英語。
+     ※ 英語優先の方針のため、ブラウザ言語による自動切替は行わない。
+       日本語で見たい人はトグルで選択（localStorage に記憶される）。
    ※ 既に日英併記の項目（ナビ「地図 Map」等）はそのまま（両者が読める）。
      図鑑の種の説明文・文化メモは対象外（日本語のまま）。
    ============================================================ */
@@ -15,10 +17,10 @@
   var STORE_KEY = "malama_lang";
 
   // 対応言語（将来ここに1行足す＋各辞書にその言語コードの訳を足すだけで増やせる）
-  // 先頭が既定言語。code は辞書のキー・navigator.language の前方一致に使う。
+  // 先頭が既定言語（＝英語をプライマリに）。メニューもこの順で並ぶ。
   var LANGUAGES = [
-    { code: "ja", label: "日本語" },
     { code: "en", label: "English" },
+    { code: "ja", label: "日本語" },
   ];
 
   // 地球儀アイコン（インライン SVG・緯線/経線グリッド入り）
@@ -38,12 +40,10 @@
     var codes = langCodes();
     var saved = null;
     try { saved = localStorage.getItem(STORE_KEY); } catch (e) {}
+    // ユーザーが明示的に選んだ言語（localStorage）を最優先で尊重
     if (saved && codes.indexOf(saved) !== -1) return saved;
-    var nav = (navigator.language || "").toLowerCase();
-    for (var i = 0; i < codes.length; i++) {
-      if (nav.indexOf(codes[i]) === 0) return codes[i];
-    }
-    return codes[0]; // 既定（先頭）
+    // それ以外は常に既定＝英語（codes[0]）。英語優先のためブラウザ言語では自動切替しない。
+    return codes[0];
   }
 
   window.LANG = detect();
