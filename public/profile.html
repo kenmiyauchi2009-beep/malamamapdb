@@ -94,82 +94,140 @@
         lo.addEventListener("click", function () { signOut(); });
       }
 
-      // ---- 投稿を集計（自分は user_id 優先、他人は投稿者名で一致） ----
+      // ---- 投稿を取得して描画 ----
       await loadSightings();
+      renderFinds(name, isOwn, user);
+    }
+
+    // その人の投稿かどうか（自分は userId 優先、無ければ投稿者名で一致）
+    function ownsSighting(s, name, isOwn, user) {
+      if (isOwn && user) {
+        return (s.userId && s.userId === user.id) ||
+               (s.user_id && s.user_id === user.id) ||
+               s.reporter === name;
+      }
+      return s.reporter === name;
+    }
+
+    // 統計＋発見カードを描画（削除後にも呼び直して更新する）
+    function renderFinds(name, isOwn, user) {
       const mine = getAllSightings().filter(function (s) {
-        if (isOwn && user) return (s.user_id && s.user_id === user.id) || s.reporter === name;
-        return s.reporter === name;
+        return ownsSighting(s, name, isOwn, user);
       });
 
-      // 種ごとにまとめる（骨格種は id、コミュニティ種は学名でキー化）
-      const bySpecies = {};
+      // 統計（発見した種数＝集約したキー数、投稿数＝件数）
+      const speciesKeys = {};
       mine.forEach(function (s) {
-        const plant = getPlantById(s.plantId);
-        const key = plant ? plant.id : (s.speciesName || "unknown");
-        if (!bySpecies[key]) {
-          bySpecies[key] = {
-            plant: plant || null,
-            speciesName: s.speciesName || (plant ? plant.scientificName : t("profile.unconfirmed")),
-            count: 0, photo: null, first: s.date, last: s.date,
-          };
-        }
-        const g = bySpecies[key];
-        g.count++;
-        if (s.photoUrl && !g.photo) g.photo = s.photoUrl;
-        if (s.date < g.first) g.first = s.date;
-        if (s.date > g.last) g.last = s.date;
+        const p = getPlantById(s.plantId);
+        speciesKeys[p ? p.id : (s.speciesName || "unknown")] = true;
       });
-      const species = Object.keys(bySpecies).map(function (k) { return bySpecies[k]; });
-
-      // ---- 統計 ----
       document.getElementById("pStats").textContent =
-        t("profile.stats", { species: species.length, reports: mine.length });
+        t("profile.stats", { species: Object.keys(speciesKeys).length, reports: mine.length });
 
-      // ---- 発見した植物カード ----
       const grid = document.getElementById("myFinds");
-      if (!species.length) {
+      grid.innerHTML = "";
+      if (!mine.length) {
         grid.innerHTML = '<p class="dex-empty">' +
           (isOwn ? t("profile.empty") : t("profile.empty_other")) + "</p>";
         return;
       }
-      // 発見数が多い順
-      species.sort(function (a, b) { return b.count - a.count; });
 
-      species.forEach(function (g) {
-        const plant = g.plant;
-        const hawName = plant ? plant.hawaiianName : g.speciesName;
-        const sciName = plant ? plant.scientificName : g.speciesName;
-        const category = plant ? plant.category : "community";
-        const catLabel = category === "native" ? t("stats.legend_native")
-                       : category === "invasive" ? t("stats.legend_invasive")
-                       : t("plants.community_tag");
-        const photoSrc = g.photo || (plant ? plant.imageUrl : null);
-        const color = plant ? plant.color : "#6b7261";
+      if (isOwn) {
+        // 自分：1投稿ずつ（新しい順）＝各カードに削除ボタン（種の全投稿をまとめて消さない）
+        mine.slice()
+          .sort(function (a, b) { return a.date < b.date ? 1 : -1; })
+          .forEach(function (s) { grid.appendChild(buildPostCard(s, name, isOwn, user)); });
+      } else {
+        // 他人：種ごとに集約したカード（削除ボタンなし）
+        const bySpecies = {};
+        mine.forEach(function (s) {
+          const plant = getPlantById(s.plantId);
+          const key = plant ? plant.id : (s.speciesName || "unknown");
+          if (!bySpecies[key]) {
+            bySpecies[key] = {
+              plant: plant || null,
+              speciesName: s.speciesName || (plant ? plant.scientificName : t("profile.unconfirmed")),
+              count: 0, photo: null, first: s.date, last: s.date,
+            };
+          }
+          const g = bySpecies[key];
+          g.count++;
+          if (s.photoUrl && !g.photo) g.photo = s.photoUrl;
+          if (s.date < g.first) g.first = s.date;
+          if (s.date > g.last) g.last = s.date;
+        });
+        Object.keys(bySpecies).map(function (k) { return bySpecies[k]; })
+          .sort(function (a, b) { return b.count - a.count; })
+          .forEach(function (g) { grid.appendChild(buildSpeciesCard(g)); });
+      }
+    }
 
-        const card = document.createElement("article");
-        card.className = "plant-card";
+    // 種を表す共通のカード骨格を作る（写真・カテゴリタグ・名前・日付）
+    function cardShell(plant, speciesName, category, photoSrc, dateText) {
+      const hawName = plant ? plant.hawaiianName : speciesName;
+      const sciName = plant ? plant.scientificName : speciesName;
+      const catLabel = category === "native" ? t("stats.legend_native")
+                     : category === "invasive" ? t("stats.legend_invasive")
+                     : t("plants.community_tag");
+      const color = plant ? plant.color : "#6b7261";
+      const photoHtml = photoSrc
+        ? '<img src="' + photoSrc + '" alt="' + hawName + '" loading="lazy" onerror="this.style.display=\'none\'">'
+        : '<div class="photo-fallback" style="background:' + color + '"></div>';
 
-        const photoHtml = photoSrc
-          ? '<img src="' + photoSrc + '" alt="' + hawName + '" loading="lazy" onerror="this.style.display=\'none\'">'
-          : '<div class="photo-fallback" style="background:' + color + '"></div>';
+      const card = document.createElement("article");
+      card.className = "plant-card";
+      card.innerHTML =
+        '<div class="plant-photo">' + photoHtml +
+          '<span class="cat-tag ' + category + '">' + catLabel + "</span>" +
+        "</div>" +
+        '<div class="plant-body">' +
+          '<div class="haw-name">' + hawName + "</div>" +
+          '<div class="sci-name">' + sciName + "</div>" +
+          '<div class="find-date">' + dateText + "</div>" +
+        "</div>";
+      return card;
+    }
 
-        const dateText = g.first === g.last
-          ? g.last
-          : g.first + " 〜 " + g.last;
+    // 集約カード（他人のプロフィール用・件数バッジ付き）
+    function buildSpeciesCard(g) {
+      const plant = g.plant;
+      const category = plant ? plant.category : "community";
+      const photoSrc = g.photo || (plant ? plant.imageUrl : null);
+      const dateText = g.first === g.last ? g.last : g.first + " 〜 " + g.last;
+      const card = cardShell(plant, g.speciesName, category, photoSrc, dateText);
+      const badge = document.createElement("span");
+      badge.className = "dex-state found";
+      badge.textContent = "×" + g.count;
+      card.querySelector(".plant-photo").appendChild(badge);
+      return card;
+    }
 
-        card.innerHTML =
-          '<div class="plant-photo">' + photoHtml +
-            '<span class="cat-tag ' + category + '">' + catLabel + "</span>" +
-            '<span class="dex-state found">×' + g.count + "</span>" +
-          "</div>" +
-          '<div class="plant-body">' +
-            '<div class="haw-name">' + hawName + "</div>" +
-            '<div class="sci-name">' + sciName + "</div>" +
-            '<div class="find-date">' + dateText + "</div>" +
-          "</div>";
+    // 1投稿カード（自分のプロフィール用・削除ボタン付き）
+    function buildPostCard(s, name, isOwn, user) {
+      const plant = getPlantById(s.plantId);
+      const category = plant ? plant.category : "community";
+      const speciesName = s.speciesName || (plant ? plant.scientificName : t("profile.unconfirmed"));
+      const photoSrc = s.photoUrl || (plant ? plant.imageUrl : null);
+      const card = cardShell(plant, speciesName, category, photoSrc, s.date);
 
-        grid.appendChild(card);
-      });
+      const del = document.createElement("button");
+      del.type = "button";
+      del.className = "del-btn";
+      del.textContent = "🗑 " + t("delete.btn");
+      del.addEventListener("click", function () { handleDeletePost(s.id, name, isOwn, user); });
+      card.querySelector(".plant-body").appendChild(del);
+      return card;
+    }
+
+    // 削除（確認＝最低1回）→ 成功でキャッシュから消え、リストと統計を再描画
+    async function handleDeletePost(id, name, isOwn, user) {
+      if (!window.confirm(t("delete.confirm"))) return;
+      try {
+        await deleteSighting(id);
+        renderFinds(name, isOwn, user);
+      } catch (err) {
+        window.alert(t("delete.failed") + "\n" + err.message);
+      }
     }
   </script>
 </body>
