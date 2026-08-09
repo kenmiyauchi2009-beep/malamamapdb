@@ -449,17 +449,22 @@ h1, h2, h3, h4 { font-family: var(--serif); font-weight: 600; }
 .reporter-link { color: var(--forest); text-decoration: underline; text-underline-offset: 2px; }
 .reporter-link:hover { color: var(--lehua); }
 
-/* 自分の投稿を削除するボタン（ポップアップ／フィード） */
+/* 自分の投稿を削除するボタン（ポップアップ／フィード／プロフィール）
+   普段は控えめ（淡いグレー・小さめ）、ホバー時だけ赤で強調する。 */
 .del-btn {
-  display: inline-flex; align-items: center; gap: 0.25rem;
-  margin-top: 0.5rem;
-  border: 1px solid var(--lehua); background: transparent; color: var(--lehua);
-  border-radius: 6px; padding: 0.3rem 0.6rem;
-  font-family: var(--sans); font-size: 0.78rem; cursor: pointer;
-  transition: background 0.15s ease, color 0.15s ease;
+  display: inline-flex; align-items: center; gap: 0.2rem;
+  margin-top: 0.4rem;
+  border: 1px solid var(--rule); background: transparent; color: var(--text-soft);
+  border-radius: 5px; padding: 0.12rem 0.4rem;
+  font-family: var(--sans); font-size: 0.66rem; line-height: 1.4;
+  opacity: 0.7; cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
 }
-.del-btn:hover { background: var(--lehua); color: #fff; }
-.feed-del { margin-top: 0.45rem; }
+.del-btn:hover {
+  opacity: 1;
+  border-color: var(--lehua); color: var(--lehua); background: transparent;
+}
+.feed-del { margin-top: 0.35rem; }
 
 /* ---------- マイページ（プロフィール） ---------- */
 .profile-head {
