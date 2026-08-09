@@ -163,6 +163,60 @@ h1, h2, h3, h4 { font-family: var(--serif); font-weight: 600; }
   .layout { grid-template-columns: 1fr; }
 }
 
+/* ---------- ホーム（ランディング） ---------- */
+.home { max-width: 1080px; margin: 0 auto; padding: 1rem 1.6rem 3.5rem; }
+
+.hero { text-align: center; padding: 2.4rem 1rem 2.2rem; }
+.hero-logo { width: 84px; height: 84px; margin: 0 auto 1rem; display: block; }
+.hero h1 {
+  font-family: var(--serif); font-weight: 600; color: var(--forest);
+  font-size: clamp(2.4rem, 6vw, 3.6rem); line-height: 1.05; letter-spacing: 0.01em;
+}
+.hero-sub { font-family: var(--serif); font-style: italic; color: var(--text-soft); margin-top: 0.4rem; }
+.hero-lede { max-width: 42ch; margin: 1.1rem auto 0; color: var(--text); font-size: 1.02rem; }
+.home-cta { display: flex; gap: 0.8rem; justify-content: center; flex-wrap: wrap; margin-top: 2rem; }
+.home-cta a { text-decoration: none; padding: 0.8rem 1.7rem; font-size: 1rem; display: inline-block; }
+
+.home-section { margin-top: 3.2rem; }
+.home-section > h2 {
+  font-family: var(--serif); font-weight: 600; color: var(--forest);
+  font-size: 1.6rem; text-align: center; margin-bottom: 1.6rem;
+}
+
+.home-mission p { max-width: 62ch; margin: 0 auto; text-align: center; color: var(--text); line-height: 1.75; }
+.home-legend {
+  display: flex; gap: 0.8rem 1.5rem; justify-content: center; flex-wrap: wrap;
+  margin-top: 1.3rem; font-size: 0.85rem; color: var(--text-soft);
+}
+.home-legend > span { display: inline-flex; align-items: center; gap: 0.4rem; }
+
+.home-steps, .home-features {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.2rem;
+}
+.step {
+  background: var(--card); border: 1px solid var(--rule); border-radius: var(--radius);
+  box-shadow: var(--shadow); padding: 1.5rem 1.3rem; text-align: center;
+}
+.step-num {
+  width: 42px; height: 42px; border-radius: 50%; margin: 0 auto 0.8rem;
+  background: var(--forest); color: var(--paper);
+  font-family: var(--serif); font-size: 1.35rem;
+  display: flex; align-items: center; justify-content: center;
+}
+.step h3 { font-family: var(--serif); color: var(--forest); font-size: 1.2rem; margin-bottom: 0.45rem; }
+.step p { font-size: 0.88rem; color: var(--text-soft); line-height: 1.6; }
+
+.feature-card {
+  display: block; text-decoration: none; color: var(--text);
+  background: var(--card); border: 1px solid var(--rule); border-radius: var(--radius);
+  box-shadow: var(--shadow); padding: 1.4rem 1.3rem;
+  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s ease;
+}
+.feature-card:hover { transform: translateY(-4px); box-shadow: 0 12px 26px rgba(43, 42, 38, 0.14); }
+.feature-card h3 { font-family: var(--serif); color: var(--forest); font-size: 1.25rem; margin-bottom: 0.4rem; }
+.feature-card h3 small { font-family: var(--sans); font-weight: 400; color: var(--text-soft); font-size: 0.7rem; margin-left: 0.4rem; }
+.feature-card p { font-size: 0.86rem; color: var(--text-soft); line-height: 1.6; }
+
 /* ---------- 地図 ---------- */
 #map {
   height: calc(100vh - 140px);

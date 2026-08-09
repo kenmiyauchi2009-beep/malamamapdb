@@ -53,6 +53,26 @@
   var DICT = {
     // 共通
     "header.tagline": { ja: "ハワイ在来植物を守る市民マップ", en: "A citizen map protecting Hawaiʻi's native plants" },
+
+    // ホーム（ランディング）
+    "home.hero_sub": { ja: "Mālama（マラマ）＝ハワイ語で「守る・世話をする」", en: "Mālama — Hawaiian for \"to protect, to care for\"" },
+    "home.hero_lede": { ja: "ハワイの在来植物を市民の力で記録し、外来種の侵食と ROD を早期に見つけるためのマップです。", en: "A citizen-powered map to record Hawaiʻi's native plants and catch invasive spread and ROD early." },
+    "home.cta_map": { ja: "地図を見る", en: "View the map" },
+    "home.cta_report": { ja: "投稿する", en: "Report a sighting" },
+    "home.mission_title": { ja: "このアプリについて", en: "About this app" },
+    "home.mission_body": { ja: "みんなが撮った植物の写真を AI（BioCLIP）が種を判定し、在来種と外来種を見分けます。投稿が集まるほど、外来種の広がりや ROD（ʻŌhiʻa の急性枯死病）の兆候を早く見つけられます。", en: "An AI model (BioCLIP) identifies the species from everyone's plant photos and tells native from invasive. As reports build up, the spread of invasives and signs of ROD (Rapid ʻŌhiʻa Death) show up earlier." },
+    "home.steps_title": { ja: "使い方 3ステップ", en: "How it works — 3 steps" },
+    "home.step1_title": { ja: "写真を撮る", en: "Take a photo" },
+    "home.step1_body": { ja: "植物の写真を撮る／選ぶと、AI が種の候補を出します。分からなければ「未確認」でOK。", en: "Take or choose a photo and the AI suggests candidate species. Not sure? \"Unconfirmed\" is fine." },
+    "home.step2_title": { ja: "場所を選ぶ", en: "Choose the spot" },
+    "home.step2_body": { ja: "写真に位置情報があれば自動でサジェスト。地図タップや「現在地を使う」でも設定できます。", en: "If the photo has GPS, it's suggested automatically. You can also tap the map or use your current location." },
+    "home.step3_title": { ja: "投稿する", en: "Submit" },
+    "home.step3_body": { ja: "投稿すると地図と図鑑にすぐ反映。新種を見つけると発見の演出が出ます。", en: "Your report appears on the map and dex instantly — a discovery moment plays for new finds." },
+    "home.features_title": { ja: "できること", en: "Features" },
+    "home.feat_map_body": { ja: "目撃された植物をピンで表示。タップで写真・種名・AIの確信度が見られます。", en: "Sightings shown as pins. Tap for the photo, species, and AI confidence." },
+    "home.feat_dex_body": { ja: "見つけた植物が集まる図鑑。検索や在来/外来の絞り込みができます。", en: "A field guide of found plants, with search and native/invasive filters." },
+    "home.feat_ai_body": { ja: "写真から種を AI が判定。追加学習なしでハワイ固有種を識別します。", en: "AI identifies species from photos — recognizing Hawaiʻi's endemics with no extra training." },
+    "home.feat_stats_body": { ja: "在来/外来の傾向やヒートマップを可視化。観測トレンドとして正直に表示します。", en: "Visualizes native/invasive trends and a heatmap — shown honestly as observation trends." },
     "nav.mypage": { ja: "マイページ", en: "My Page" },
     "nav.login": { ja: "ログイン", en: "Login" },
     "lang.ja": { ja: "日本語", en: "日本語" },

@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>植物図鑑 Plants — Mālama Map</title>
+  <title>地図 Map — Mālama Map</title>
 
-  <!-- Leaflet（詳細モーダルのミニ地図用） -->
+  <!-- Leaflet（地図ライブラリ）CDN・APIキー不要 -->
   <link
     rel="stylesheet"
     href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -30,44 +30,38 @@
       </span>
     </a>
     <nav class="main-nav">
-      <a href="map.html">地図<small>Map</small></a>
-      <a href="plants.html" class="active">植物図鑑<small>Plants</small></a>
+      <a href="map.html" class="active">地図<small>Map</small></a>
+      <a href="plants.html">植物図鑑<small>Plants</small></a>
       <a href="report.html">投稿<small>Report</small></a>
       <a href="stats.html">統計<small>Stats</small></a>
       <a href="#" class="disabled">マイページ<small>Profile</small></a>
     </nav>
   </header>
 
-  <main class="plants-page">
-    <div class="page-intro">
-      <h1>植物図鑑 Plants</h1>
-      <p data-i18n="plants.lead">ハワイの在来種と、森を脅かす外来種。見つけて投稿すると図鑑が埋まっていきます。</p>
-      <div class="dex-progress" id="dexProgress"></div>
-    </div>
+  <!-- メイン：左に地図 / 右に最新投稿 -->
+  <main class="layout">
+    <section>
+      <div id="map"></div>
+    </section>
 
-    <!-- 検索（種名・学名・ハワイ語名） -->
-    <div class="dex-search">
-      <input type="search" id="dexSearch" class="text-input"
-             placeholder="種名で検索（学名・ハワイ語名）…"
-             data-i18n-ph="plants.search_ph" />
-    </div>
+    <aside class="sidebar">
+      <div class="legend">
+        <h3>凡例 Legend</h3>
+        <div class="legend-item"><span class="dot native"></span> 在来種 Native</div>
+        <div class="legend-item"><span class="dot invasive"></span> 外来種 Invasive</div>
+        <div class="legend-item"><span class="dot rod"></span> <span data-i18n="index.legend_rod">ROD 要観察（ʻŌhiʻa）</span></div>
+      </div>
 
-    <!-- フィルタ（plants.js が動かす） -->
-    <div class="filters" id="filters">
-      <button class="filter-btn active" data-filter="all">すべて All</button>
-      <button class="filter-btn" data-filter="native">在来種 Native</button>
-      <button class="filter-btn" data-filter="invasive">外来種 Invasive</button>
-    </div>
-
-    <!-- カードがここに入る -->
-    <div class="plant-grid" id="plantGrid"></div>
+      <h2>最新の目撃 Recent Sightings</h2>
+      <div class="feed" id="feed"><!-- map.js が投稿カードを差し込む --></div>
+    </aside>
   </main>
 
   <footer class="site-footer">
     Mālama Map — <span data-i18n="footer.community">市民科学でハワイの森を守る · みんなの投稿を共有</span>
   </footer>
 
-  <!-- 設定 → supabase-js → 認証 → Leaflet → データ → 図鑑ロジック -->
+  <!-- 設定 → i18n → supabase-js → 認証 → Leaflet → データ → 地図ロジック の順で読み込む -->
   <script src="config.js"></script>
   <script src="i18n.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -78,6 +72,6 @@
     crossorigin=""
   ></script>
   <script src="data.js"></script>
-  <script src="plants.js"></script>
+  <script src="map.js"></script>
 </body>
 </html>

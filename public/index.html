@@ -3,17 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mālama Map — ハワイ在来植物の市民マップ</title>
-
-  <!-- Leaflet（地図ライブラリ）CDN・APIキー不要 -->
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-    crossorigin=""
-  />
+  <title>Mālama Map — ハワイ在来植物を守る市民マップ</title>
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
-  <!-- 図鑑ノート風の見出しフォント（セリフ体 Fraunces） -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,600&display=swap" rel="stylesheet" />
@@ -30,7 +21,7 @@
       </span>
     </a>
     <nav class="main-nav">
-      <a href="index.html" class="active">地図<small>Map</small></a>
+      <a href="map.html">地図<small>Map</small></a>
       <a href="plants.html">植物図鑑<small>Plants</small></a>
       <a href="report.html">投稿<small>Report</small></a>
       <a href="stats.html">統計<small>Stats</small></a>
@@ -38,40 +29,84 @@
     </nav>
   </header>
 
-  <!-- メイン：左に地図 / 右に最新投稿 -->
-  <main class="layout">
-    <section>
-      <div id="map"></div>
+  <main class="home">
+    <!-- ① ヒーロー -->
+    <section class="hero">
+      <img class="hero-logo" src="favicon.svg" alt="" aria-hidden="true" />
+      <h1>Mālama Map</h1>
+      <p class="hero-sub" data-i18n="home.hero_sub">Mālama（マラマ）＝ハワイ語で「守る・世話をする」</p>
+      <p class="hero-lede" data-i18n="home.hero_lede">ハワイの在来植物を市民の力で記録し、外来種の侵食と ROD を早期に見つけるためのマップです。</p>
+      <div class="home-cta">
+        <a class="submit-btn" href="map.html" data-i18n="home.cta_map">地図を見る</a>
+        <a class="ghost-btn" href="report.html" data-i18n="home.cta_report">投稿する</a>
+      </div>
     </section>
 
-    <aside class="sidebar">
-      <div class="legend">
-        <h3>凡例 Legend</h3>
-        <div class="legend-item"><span class="dot native"></span> 在来種 Native</div>
-        <div class="legend-item"><span class="dot invasive"></span> 外来種 Invasive</div>
-        <div class="legend-item"><span class="dot rod"></span> <span data-i18n="index.legend_rod">ROD 要観察（ʻŌhiʻa）</span></div>
+    <!-- ② 使命 -->
+    <section class="home-section home-mission">
+      <h2 data-i18n="home.mission_title">このアプリについて</h2>
+      <p data-i18n="home.mission_body">みんなが撮った植物の写真を AI（BioCLIP）が種を判定し、在来種と外来種を見分けます。投稿が集まるほど、外来種の広がりや ROD（ʻŌhiʻa の急性枯死病）の兆候を早く見つけられます。</p>
+      <div class="home-legend">
+        <span><span class="dot native"></span> 在来種 Native</span>
+        <span><span class="dot invasive"></span> 外来種 Invasive</span>
+        <span><span class="dot rod"></span> <span data-i18n="index.legend_rod">ROD 要観察（ʻŌhiʻa）</span></span>
       </div>
+    </section>
 
-      <h2>最新の目撃 Recent Sightings</h2>
-      <div class="feed" id="feed"><!-- map.js が投稿カードを差し込む --></div>
-    </aside>
+    <!-- ③ 使い方3ステップ -->
+    <section class="home-section">
+      <h2 data-i18n="home.steps_title">使い方 3ステップ</h2>
+      <div class="home-steps">
+        <div class="step">
+          <div class="step-num" aria-hidden="true">1</div>
+          <h3 data-i18n="home.step1_title">写真を撮る</h3>
+          <p data-i18n="home.step1_body">植物の写真を撮る／選ぶと、AI が種の候補を出します。分からなければ「未確認」でOK。</p>
+        </div>
+        <div class="step">
+          <div class="step-num" aria-hidden="true">2</div>
+          <h3 data-i18n="home.step2_title">場所を選ぶ</h3>
+          <p data-i18n="home.step2_body">写真に位置情報があれば自動でサジェスト。地図タップや「現在地を使う」でも設定できます。</p>
+        </div>
+        <div class="step">
+          <div class="step-num" aria-hidden="true">3</div>
+          <h3 data-i18n="home.step3_title">投稿する</h3>
+          <p data-i18n="home.step3_body">投稿すると地図と図鑑にすぐ反映。新種を見つけると発見の演出が出ます。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ④ 機能紹介 -->
+    <section class="home-section">
+      <h2 data-i18n="home.features_title">できること</h2>
+      <div class="home-features">
+        <a class="feature-card" href="map.html">
+          <h3>地図<small>Map</small></h3>
+          <p data-i18n="home.feat_map_body">目撃された植物をピンで表示。タップで写真・種名・AIの確信度が見られます。</p>
+        </a>
+        <a class="feature-card" href="plants.html">
+          <h3>植物図鑑<small>Plants</small></h3>
+          <p data-i18n="home.feat_dex_body">見つけた植物が集まる図鑑。検索や在来/外来の絞り込みができます。</p>
+        </a>
+        <a class="feature-card" href="report.html">
+          <h3>AI判定<small>BioCLIP</small></h3>
+          <p data-i18n="home.feat_ai_body">写真から種を AI が判定。追加学習なしでハワイ固有種を識別します。</p>
+        </a>
+        <a class="feature-card" href="stats.html">
+          <h3>統計<small>Stats</small></h3>
+          <p data-i18n="home.feat_stats_body">在来/外来の傾向やヒートマップを可視化。観測トレンドとして正直に表示します。</p>
+        </a>
+      </div>
+    </section>
   </main>
 
   <footer class="site-footer">
     Mālama Map — <span data-i18n="footer.community">市民科学でハワイの森を守る · みんなの投稿を共有</span>
   </footer>
 
-  <!-- 設定 → supabase-js → 認証 → Leaflet → データ → 地図ロジック の順で読み込む -->
+  <!-- 設定 → i18n → supabase-js → 認証（ヘッダーのログイン状態・言語トグル） -->
   <script src="config.js"></script>
   <script src="i18n.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="auth.js"></script>
-  <script
-    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-    crossorigin=""
-  ></script>
-  <script src="data.js"></script>
-  <script src="map.js"></script>
 </body>
 </html>

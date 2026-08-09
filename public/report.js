@@ -556,7 +556,7 @@ form.addEventListener("submit", async function (e) {
     showDiscoveryPopup(plantId, speciesName, photoDataUrl, discoveredBefore);
   } else {
     alert(t("report.done"));
-    window.location.href = "index.html";
+    window.location.href = "map.html";
   }
 });
 
@@ -630,7 +630,7 @@ function showDiscoveryPopup(plantId, speciesName, photoUrl, before) {
       '<div class="disc-badges">' + badge + "</div>" +
       '<div class="disc-progress">' + progressText + "</div>" +
       '<div class="disc-actions">' +
-        '<button type="button" class="disc-btn primary" data-go="index.html">' + t("discovery.to_map") + "</button>" +
+        '<button type="button" class="disc-btn primary" data-go="map.html">' + t("discovery.to_map") + "</button>" +
         '<button type="button" class="disc-btn" data-go="plants.html">' + t("discovery.to_dex") + "</button>" +
       "</div>" +
     "</div>";
