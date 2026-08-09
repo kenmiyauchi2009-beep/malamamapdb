@@ -199,6 +199,21 @@
     "report.err_no_plant": { ja: "植物名を選んでください（分からなければ「未確認」でOK）。", en: "Please choose a species (\"Unconfirmed\" is fine if unsure)." },
     "report.no_note": { ja: "（メモなし）", en: "(no note)" },
 
+    // ROD（Rapid ʻŌhiʻa Death）スクリーニング＆通報
+    "rod.screen_title": { ja: "Rapid ʻŌhiʻa Death（ROD）チェック", en: "Rapid ʻŌhiʻa Death (ROD) check" },
+    "rod.screen_intro": { ja: "ʻŌhiʻa が選ばれています。RODの可能性を確認します。当てはまるものにチェックしてください。", en: "You selected ʻōhiʻa. Let's check for possible ROD — tick any that apply." },
+    "rod.q1": { ja: "樹冠や枝が数日〜数週間で急に茶色く枯れた（枝／樹冠がまとめて・散発的でなく）", en: "The crown or whole branches turned brown within days–weeks (a whole branch/crown at once, not scattered)" },
+    "rod.q2": { ja: "枯れた茶色い葉が落ちずに枝に残っている", en: "The dead brown leaves are still hanging on the tree (not fallen)" },
+    "rod.warn": { ja: "⚠ Rapid ʻŌhiʻa Death（ROD）の疑いがあります。", en: "⚠ This may be Rapid ʻŌhiʻa Death (ROD)." },
+    "rod.confirm_note": { ja: "RODは実験室の検査でしか確定できません（見た目では確定できません）。「疑い」として州に通報してください。早期発見に役立ちます。", en: "ROD can only be confirmed by a lab test (it can't be confirmed by sight). Please report it to the state as a suspect — it helps catch outbreaks early." },
+    "rod.report_online": { ja: "写真でオンライン通報（643PEST）", en: "Report online with a photo (643PEST)" },
+    "rod.call": { ja: "電話で通報：643-PEST（808-643-7378）", en: "Call to report: 643-PEST (808-643-7378)" },
+    "rod.learn": { ja: "通報・サンプル提出の方法（公式サイト）", en: "How to report / submit a sample (official site)" },
+    "rod.bmp": { ja: "広げないために：ʻŌhiʻa の材や苗を動かさない／靴・道具・装備・タイヤの土を落とす／木を傷つけない。", en: "To avoid spreading it: don't move ʻōhiʻa wood or plants; clean soil off shoes, tools, gear, and tires; don't injure the tree." },
+    "rod.flagged": { ja: "この投稿は「ROD疑い（未確定）」として記録されます。", en: "This report will be flagged as “ROD suspect (unconfirmed).”" },
+    "rod.badge": { ja: "ROD疑い（未確定）", en: "ROD suspect (unconfirmed)" },
+    "rod.report_short": { ja: "州に通報", en: "Report to the state" },
+
     // 発見演出
     "discovery.title": { ja: "じゃじゃーん！新種発見", en: "Ta-da! New discovery" },
     "discovery.dex": { ja: "図鑑 <strong>{found} / {total}</strong> 種を発見！", en: "Guide: <strong>{found} / {total}</strong> species found!" },

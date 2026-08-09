@@ -41,8 +41,12 @@ create table if not exists public.sightings (
   photo_url    text,                 -- Storage 上の写真 URL（base64 は保存しない）
   status       text not null default 'unconfirmed'
                  check (status in ('unconfirmed', 'confirmed', 'rejected')),
+  rod_suspect  boolean not null default false,  -- ROD疑い（症状チェックに該当・未確定）
   created_at   timestamptz not null default now()
 );
+
+-- 既存テーブルにも列を追加（再実行時の保険。無ければ追加）
+alter table public.sightings add column if not exists rod_suspect boolean not null default false;
 
 create index if not exists sightings_date_idx     on public.sightings (date desc);
 create index if not exists sightings_plant_id_idx on public.sightings (plant_id);

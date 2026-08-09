@@ -92,6 +92,10 @@ function popupHtml(plant, sighting) {
       '<div class="popup-note">「' + sighting.note + "」</div>" +
       '<div class="popup-meta">' + catLabel + " ・ " + sighting.date + " ・ " +
         '<a class="reporter-link" href="profile.html?user=' + encodeURIComponent(sighting.reporter) + '">' + sighting.reporter + "</a></div>" +
+      // ROD疑いなら州の通報リンクを出す（未確定と明記）
+      (sighting.rodSuspect
+        ? '<div class="popup-rod">⚠ ' + t("rod.badge") + ' — <a href="https://643pest.org" target="_blank" rel="noopener">' + t("rod.report_short") + "</a></div>"
+        : "") +
       // 自分の投稿にだけ削除ボタンを出す
       (isMine(sighting)
         ? '<button type="button" class="del-btn" data-del="' + sighting.id + '">🗑 ' + t("delete.btn") + "</button>"

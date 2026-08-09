@@ -264,6 +264,7 @@ clearPhotoBtn.addEventListener("click", function (e) {
   fullPhotoDataUrl = null;
   aiResult.hidden = true;
   aiResult.innerHTML = "";
+  updateRodScreen();   // ROD チェックも隠す
 });
 
 /* ---------- ✂️ クロップ（1株まるごとを囲む → 再判定） ---------- */
@@ -380,6 +381,7 @@ function renderAiResult(data) {
   fillAiOptions(preds);
   // 一番有力な候補を初期選択
   plantSelect.value = "sp:" + preds[0].name;
+  updateRodScreen();   // ʻŌhiʻa が最有力なら ROD チェックを出す
 
   // Step2：リスト内で最初に一致した候補を「判定」に採用
   let matchedPlant = null;
@@ -449,6 +451,7 @@ function renderAiResult(data) {
     row.addEventListener("click", function () {
       plantSelect.value = row.dataset.sp;
       highlightSelectedRow();
+      updateRodScreen();
     });
   });
   highlightSelectedRow();
@@ -462,6 +465,48 @@ function highlightSelectedRow() {
 }
 // ドロップダウンを直接操作したときもハイライトを同期
 plantSelect.addEventListener("change", highlightSelectedRow);
+
+/* ---------- ROD（Rapid ʻŌhiʻa Death）スクリーニング ----------
+   AI は「種」は判定できても「病気(ROD)」は確定できない。
+   そこで ʻŌhiʻa（rodRisk 種）を選んだときだけ症状チェックを出し、
+   当てはまれば「ROD疑い」として州の通報経路へ誘導する（確定表示はしない）。 */
+const rodScreen = document.getElementById("rodScreen");
+const rodQ1 = document.getElementById("rodQ1");
+const rodQ2 = document.getElementById("rodQ2");
+const rodResult = document.getElementById("rodResult");
+
+// 現在の選択が ʻŌhiʻa（rodRisk 種）か
+function selectionIsOhia() {
+  const v = plantSelect.value || "";
+  if (v.indexOf("sp:") !== 0) return false;
+  const m = matchPlant(v.slice(3));
+  return !!(m && m.rodRisk);
+}
+
+// 選択に応じてスクリーニングの表示/非表示を切り替える（非表示時はリセット）
+function updateRodScreen() {
+  const show = selectionIsOhia();
+  rodScreen.hidden = !show;
+  if (!show) {
+    rodQ1.checked = false;
+    rodQ2.checked = false;
+    rodResult.hidden = true;
+  }
+}
+
+// 両方チェック＝ROD疑い → 通報パネルを表示
+function updateRodResult() {
+  rodResult.hidden = !(rodQ1.checked && rodQ2.checked);
+}
+
+// この投稿が ROD 疑いか（送信時に使う）
+function isRodSuspect() {
+  return !rodScreen.hidden && rodQ1.checked && rodQ2.checked;
+}
+
+rodQ1.addEventListener("change", updateRodResult);
+rodQ2.addEventListener("change", updateRodResult);
+plantSelect.addEventListener("change", updateRodScreen);
 
 /* ---------- 送信 ---------- */
 const form = document.getElementById("reportForm");
@@ -542,6 +587,7 @@ form.addEventListener("submit", async function (e) {
       date: new Date().toISOString().slice(0, 10), // YYYY-MM-DD
       note: document.getElementById("noteInput").value.trim() || t("report.no_note"),
       photoUrl: photoUrl,         // Storage の URL（写真なしなら null）
+      rodSuspect: isRodSuspect(), // ROD疑い（症状チェック両方に該当）
     };
     await saveSighting(sighting);
   } catch (err) {

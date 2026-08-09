@@ -88,6 +88,7 @@ interface SightingRow {
 	reporter: string | null;
 	photo_url: string | null;
 	status: string;
+	rod_suspect: boolean | null;
 	created_at: string;
 }
 
@@ -106,6 +107,7 @@ function toCamel(r: SightingRow) {
 		reporter: r.reporter,
 		photoUrl: r.photo_url,
 		status: r.status,
+		rodSuspect: r.rod_suspect === true,
 		createdAt: r.created_at,
 	};
 }
@@ -171,6 +173,7 @@ app.post("/sightings", async (c) => {
 		note: (body.note as string) ?? null,
 		reporter: displayName,
 		photo_url: (body.photoUrl as string) ?? null,
+		rod_suspect: body.rodSuspect === true,
 	};
 
 	const { data, error } = await auth.client

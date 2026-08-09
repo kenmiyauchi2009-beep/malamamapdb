@@ -449,6 +449,41 @@ h1, h2, h3, h4 { font-family: var(--serif); font-weight: 600; }
 .reporter-link { color: var(--forest); text-decoration: underline; text-underline-offset: 2px; }
 .reporter-link:hover { color: var(--lehua); }
 
+/* ---------- ROD（Rapid ʻŌhiʻa Death）スクリーニング＆通報 ---------- */
+.rod-screen {
+  border: 1px solid var(--lehua);
+  border-left: 4px solid var(--lehua);
+  border-radius: var(--radius);
+  background: #fbf1ef;              /* 淡い Lehua 色の注意面 */
+  padding: 0.9rem 1rem;
+}
+.rod-screen .field-label { color: var(--lehua-dark); }
+.rod-check {
+  display: flex; align-items: flex-start; gap: 0.5rem;
+  margin: 0.5rem 0; font-size: 0.9rem; line-height: 1.5; cursor: pointer;
+}
+.rod-check input { margin-top: 0.2rem; flex-shrink: 0; }
+.rod-result {
+  margin-top: 0.8rem; padding-top: 0.8rem;
+  border-top: 1px dashed var(--rule);
+}
+.rod-warn { font-weight: 700; color: var(--lehua-dark); }
+.rod-result p { font-size: 0.9rem; margin: 0.5rem 0; }
+.rod-actions { display: flex; flex-direction: column; gap: 0.5rem; margin: 0.8rem 0; }
+.rod-actions a { text-decoration: none; text-align: center; }
+.rod-bmp {
+  background: var(--paper-warm); border-radius: 6px;
+  padding: 0.55rem 0.7rem; font-size: 0.82rem !important; color: var(--text);
+}
+.rod-flag { font-size: 0.8rem !important; color: var(--text-soft); font-style: italic; }
+
+/* 地図ポップアップの ROD 疑いバッジ＋通報リンク */
+.popup-rod {
+  margin-top: 0.4rem; padding-top: 0.4rem; border-top: 1px dashed var(--rule);
+  font-size: 0.72rem; color: var(--lehua-dark); font-weight: 600;
+}
+.popup-rod a { color: var(--lehua); }
+
 /* 自分の投稿を削除するボタン（ポップアップ／フィード／プロフィール）
    普段は控えめ（淡いグレー・小さめ）、ホバー時だけ赤で強調する。 */
 .del-btn {

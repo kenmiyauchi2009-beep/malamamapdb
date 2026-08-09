@@ -96,6 +96,27 @@
         <p class="hint" data-i18n-html="report.plant_hint_html">植物名は <strong>BioCLIP の候補</strong>から選びます。上の候補リストをタップしても選べます。分からなければ「未確認」でOK。</p>
       </div>
 
+      <!-- ʻŌhiʻa を選んだときだけ出る ROD スクリーニング（AIでは確定できないので症状で「疑い」を拾う） -->
+      <div class="field rod-screen" id="rodScreen" hidden>
+        <label class="field-label" data-i18n="rod.screen_title">Rapid ʻŌhiʻa Death (ROD) check</label>
+        <p class="hint" data-i18n="rod.screen_intro">You selected ʻōhiʻa. Let's check for possible ROD — tick any that apply.</p>
+        <label class="rod-check"><input type="checkbox" id="rodQ1" /> <span data-i18n="rod.q1">The crown or whole branches turned brown within days–weeks.</span></label>
+        <label class="rod-check"><input type="checkbox" id="rodQ2" /> <span data-i18n="rod.q2">The dead brown leaves are still hanging on the tree.</span></label>
+
+        <!-- 両方チェックで表示：州の通報経路 -->
+        <div class="rod-result" id="rodResult" hidden>
+          <p class="rod-warn" data-i18n="rod.warn">⚠ This may be Rapid ʻŌhiʻa Death (ROD).</p>
+          <p data-i18n="rod.confirm_note">ROD can only be confirmed by a lab test. Please report it to the state as a suspect.</p>
+          <div class="rod-actions">
+            <a class="submit-btn" href="https://643pest.org" target="_blank" rel="noopener" data-i18n="rod.report_online">Report online with a photo (643PEST)</a>
+            <a class="ghost-btn" href="tel:8086437378" data-i18n="rod.call">Call to report: 643-PEST (808-643-7378)</a>
+            <a class="ghost-btn" href="https://rod.ctahr.hawaii.edu" target="_blank" rel="noopener" data-i18n="rod.learn">How to report / submit a sample (official site)</a>
+          </div>
+          <p class="rod-bmp" data-i18n="rod.bmp">To avoid spreading it: don't move ʻōhiʻa wood or plants; clean soil off shoes, tools, gear, and tires; don't injure the tree.</p>
+          <p class="rod-flag" data-i18n="rod.flagged">This report will be flagged as “ROD suspect (unconfirmed).”</p>
+        </div>
+      </div>
+
       <!-- 4. メモ -->
       <div class="field">
         <label class="field-label" for="noteInput" data-i18n="report.field_note">④ Note</label>
