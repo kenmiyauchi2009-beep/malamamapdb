@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>植物図鑑 Plants — Mālama Map</title>
+  <title data-i18n="title.plants">Plants — Mālama Map</title>
 
   <!-- Leaflet（詳細モーダルのミニ地図用） -->
   <link
@@ -30,17 +30,17 @@
       </span>
     </a>
     <nav class="main-nav">
-      <a href="map.html">地図<small>Map</small></a>
-      <a href="plants.html" class="active">植物図鑑<small>Plants</small></a>
-      <a href="report.html">投稿<small>Report</small></a>
-      <a href="stats.html">統計<small>Stats</small></a>
-      <a href="#" class="disabled">マイページ<small>Profile</small></a>
+      <a href="map.html" data-i18n="nav.map">Map</a>
+      <a href="plants.html" class="active" data-i18n="nav.plants">Plants</a>
+      <a href="report.html" data-i18n="nav.report">Report</a>
+      <a href="stats.html" data-i18n="nav.stats">Stats</a>
+      <a href="#" class="disabled" data-i18n="nav.mypage">My Page</a>
     </nav>
   </header>
 
   <main class="plants-page">
     <div class="page-intro">
-      <h1>植物図鑑 Plants</h1>
+      <h1 data-i18n="plants.heading">Plants</h1>
       <p data-i18n="plants.lead">ハワイの在来種と、森を脅かす外来種。見つけて投稿すると図鑑が埋まっていきます。</p>
       <div class="dex-progress" id="dexProgress"></div>
     </div>
@@ -54,9 +54,9 @@
 
     <!-- フィルタ（plants.js が動かす） -->
     <div class="filters" id="filters">
-      <button class="filter-btn active" data-filter="all">すべて All</button>
-      <button class="filter-btn" data-filter="native">在来種 Native</button>
-      <button class="filter-btn" data-filter="invasive">外来種 Invasive</button>
+      <button class="filter-btn active" data-filter="all" data-i18n="plants.filter_all">All</button>
+      <button class="filter-btn" data-filter="native" data-i18n="legend.native">Native</button>
+      <button class="filter-btn" data-filter="invasive" data-i18n="legend.invasive">Invasive</button>
     </div>
 
     <!-- カードがここに入る -->

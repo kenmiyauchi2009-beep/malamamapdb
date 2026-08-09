@@ -73,7 +73,7 @@ function createCard(plant, discovered, postedPhoto) {
   card.className = "plant-card" + (discovered ? "" : " locked");
   card.dataset.category = plant.category;
 
-  const catLabel = plant.category === "native" ? "在来種 Native" : "外来種 Invasive";
+  const catLabel = plant.category === "native" ? t("legend.native") : t("legend.invasive");
 
   // 発見済みなら投稿写真を優先、無ければ Wikimedia
   const photoSrc = discovered && postedPhoto ? postedPhoto : plant.imageUrl;
@@ -302,7 +302,7 @@ function openPlantDetail(plant, discovered, postedPhoto) {
   const posted = sightings.find(function (s) { return s.photoUrl; });
   const photoSrc = (discovered && posted) ? posted.photoUrl : plant.imageUrl;
 
-  const catLabel = plant.category === "native" ? "在来種 Native" : "外来種 Invasive";
+  const catLabel = plant.category === "native" ? t("legend.native") : t("legend.invasive");
   let tags = '<span class="cat-tag ' + plant.category + '" style="position:static">' + catLabel + "</span> ";
   tags += '<span class="badge ' + plant.status + '">' + plant.statusLabel + "</span>";
   if (plant.rodRisk)    tags += ' <span class="badge rod">' + t("map.rod_watch") + "</span>";

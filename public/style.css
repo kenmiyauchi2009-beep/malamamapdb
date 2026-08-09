@@ -972,7 +972,8 @@ select.text-input { cursor: pointer; }
     line-height: 1.1;
     text-align: center;
   }
-  .main-nav a small { display: none; }        /* 英語サブラベルは隠す＝日本語のみ */
+  /* ラベルは data-i18n で単一言語（英語版は英語のみ／日本語版は日本語のみ）。
+     アイコン＋ラベルの2段表示。 */
 
   /* アイコン注入（href 先頭一致・この画面幅でのみ表示） */
   .main-nav a::before {
@@ -988,22 +989,6 @@ select.text-input { cursor: pointer; }
 
   /* アクティブ表示はバー用に調整（デスクトップの下線は消す） */
   .main-nav a.active { color: var(--lehua); box-shadow: none; }
-
-  /* 言語に応じてラベルを切替：
-     静的ナビ（地図/植物図鑑/投稿/統計）は 主ラベル=<a>直書きの日本語文字ノード・英語=<small>。
-     ・日本語モード（既定）：文字ノードを表示・<small> は上で display:none。
-     ・英語モード：文字ノードを font-size:0 で隠し、<small> を英語ラベルとして表示。
-       アイコン ::before は rem 指定なので font-size:0 の影響を受けず残る。
-     ※ 認証項目 #authNavItem は主ラベルが auth.js の t("nav.mypage/login")＝既に言語対応済み
-       （<small> はユーザー名/Login）なので、この入替から除外する。 */
-  html[lang="en"] .main-nav a:not(#authNavItem) { font-size: 0; }
-  html[lang="en"] .main-nav a:not(#authNavItem) small {
-    display: block;
-    font-size: 0.66rem;
-    font-style: normal;
-    font-family: var(--sans);
-    color: inherit;               /* a の色（通常=forest／active=lehua）を継承 */
-  }
 
   /* ボトムナビに隠れないよう本文へ余白 */
   body { padding-bottom: calc(64px + env(safe-area-inset-bottom, 0)); }

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>地図 Map — Mālama Map</title>
+  <title data-i18n="title.map">Map — Mālama Map</title>
 
   <!-- Leaflet（地図ライブラリ）CDN・APIキー不要 -->
   <link
@@ -30,11 +30,11 @@
       </span>
     </a>
     <nav class="main-nav">
-      <a href="map.html" class="active">地図<small>Map</small></a>
-      <a href="plants.html">植物図鑑<small>Plants</small></a>
-      <a href="report.html">投稿<small>Report</small></a>
-      <a href="stats.html">統計<small>Stats</small></a>
-      <a href="#" class="disabled">マイページ<small>Profile</small></a>
+      <a href="map.html" class="active" data-i18n="nav.map">Map</a>
+      <a href="plants.html" data-i18n="nav.plants">Plants</a>
+      <a href="report.html" data-i18n="nav.report">Report</a>
+      <a href="stats.html" data-i18n="nav.stats">Stats</a>
+      <a href="#" class="disabled" data-i18n="nav.mypage">My Page</a>
     </nav>
   </header>
 
@@ -46,13 +46,13 @@
 
     <aside class="sidebar">
       <div class="legend">
-        <h3>凡例 Legend</h3>
-        <div class="legend-item"><span class="dot native"></span> 在来種 Native</div>
-        <div class="legend-item"><span class="dot invasive"></span> 外来種 Invasive</div>
+        <h3 data-i18n="map.legend_title">Legend</h3>
+        <div class="legend-item"><span class="dot native"></span> <span data-i18n="legend.native">Native</span></div>
+        <div class="legend-item"><span class="dot invasive"></span> <span data-i18n="legend.invasive">Invasive</span></div>
         <div class="legend-item"><span class="dot rod"></span> <span data-i18n="index.legend_rod">ROD 要観察（ʻŌhiʻa）</span></div>
       </div>
 
-      <h2>最新の目撃 Recent Sightings</h2>
+      <h2 data-i18n="map.recent">Recent Sightings</h2>
       <div class="feed" id="feed"><!-- map.js が投稿カードを差し込む --></div>
     </aside>
   </main>

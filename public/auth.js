@@ -84,24 +84,24 @@ async function renderAuthNav() {
   const user = await getCurrentUser();
 
   // ここから同期処理（await なし）＝重複が起きない
-  // 既存の「マイページ（disabled）」プレースホルダを取り除く
-  nav.querySelectorAll("a.disabled").forEach(function (a) {
-    if (a.textContent.indexOf("マイページ") === 0) a.remove();
-  });
+  // 「マイページ（disabled）」プレースホルダを取り除く（ナビ内の disabled はこれだけ。
+  //  言語で文字が変わるので、テキストでなくクラスで判定する）
+  nav.querySelectorAll("a.disabled").forEach(function (a) { a.remove(); });
   // 既存の認証ナビ項目を「すべて」除去（過去に重複していた分も掃除）
   nav.querySelectorAll("#authNavItem").forEach(function (a) { a.remove(); });
 
+  // 単一言語ナビ：ラベルのみ（英語版は英語のみ／日本語版は日本語のみ）。
+  // data-i18n を付けておくと言語切替（再読込）でも正しく描き直される。
   const item = document.createElement("a");
   item.id = "authNavItem";
-  item.href = "#";
-
   if (user) {
-    // ログイン中はプロフィール（マイページ）へのリンク。ログアウトはマイページ内に置く。
     item.href = "profile.html";
-    item.innerHTML = t("nav.mypage") + "<small>" + userDisplayName(user) + "</small>";
+    item.setAttribute("data-i18n", "nav.mypage");
+    item.textContent = t("nav.mypage");
   } else {
-    item.innerHTML = t("nav.login") + "<small>Login</small>";
     item.href = "login.html";
+    item.setAttribute("data-i18n", "nav.login");
+    item.textContent = t("nav.login");
   }
   nav.appendChild(item);
 }

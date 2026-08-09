@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>投稿 Report — Mālama Map</title>
+  <title data-i18n="title.report">Report — Mālama Map</title>
 
   <!-- Leaflet（地点選択ミニマップ用） -->
   <link
@@ -32,17 +32,17 @@
       </span>
     </a>
     <nav class="main-nav">
-      <a href="map.html">地図<small>Map</small></a>
-      <a href="plants.html">植物図鑑<small>Plants</small></a>
-      <a href="report.html" class="active">投稿<small>Report</small></a>
-      <a href="stats.html">統計<small>Stats</small></a>
-      <a href="#" class="disabled">マイページ<small>Profile</small></a>
+      <a href="map.html" data-i18n="nav.map">Map</a>
+      <a href="plants.html" data-i18n="nav.plants">Plants</a>
+      <a href="report.html" class="active" data-i18n="nav.report">Report</a>
+      <a href="stats.html" data-i18n="nav.stats">Stats</a>
+      <a href="#" class="disabled" data-i18n="nav.mypage">My Page</a>
     </nav>
   </header>
 
   <main class="report-page">
     <div class="page-intro">
-      <h1>目撃を投稿 Report a Sighting</h1>
+      <h1 data-i18n="report.heading">Report a Sighting</h1>
       <p data-i18n="report.lead">見つけた植物の場所と写真を記録しよう。投稿は地図にすぐ反映されます。</p>
     </div>
 
@@ -50,7 +50,7 @@
 
       <!-- 1. 写真を撮る / 選ぶ -->
       <div class="field">
-        <label class="field-label">① 写真 Photo</label>
+        <label class="field-label" data-i18n="report.field_photo">① Photo</label>
         <div class="photo-uploader" id="photoBox">
           <!-- capture 属性は付けない：スマホで「カメラ撮影」と「フォトライブラリから選ぶ」を
                どちらも選べるようにするため（付けるとカメラ強制になる）。multiple 無し＝1枚だけ選択。 -->
@@ -62,8 +62,7 @@
           />
           <div class="photo-placeholder" id="photoPlaceholder">
             <span class="cam-icon" aria-hidden="true">＋</span>
-            <span data-i18n="report.photo_tap">タップして写真を撮る / 選ぶ</span>
-            <small>Take or choose a photo</small>
+            <span data-i18n="report.photo_tap">Tap to take or choose a photo</span>
           </div>
           <img id="photoPreview" class="photo-preview" alt="プレビュー" hidden />
         </div>
@@ -76,7 +75,7 @@
 
       <!-- 2. 地点を選ぶ -->
       <div class="field">
-        <label class="field-label">② 地点 Location</label>
+        <label class="field-label" data-i18n="report.field_location">② Location</label>
         <p class="hint" data-i18n="report.loc_hint">写真に位置情報があれば自動で候補を表示します。地図をタップ／ピンをドラッグで微調整できます。</p>
         <!-- 写真のEXIFから推定した位置の「ここですか？」サジェスト -->
         <div id="exifSuggest" class="exif-suggest" hidden></div>
@@ -89,7 +88,7 @@
 
       <!-- 3. 植物名 -->
       <div class="field">
-        <label class="field-label" for="plantSelect">③ 植物名 Plant</label>
+        <label class="field-label" for="plantSelect" data-i18n="report.field_plant">③ Plant</label>
         <select id="plantSelect" class="text-input" required>
           <option value="" disabled selected hidden data-i18n="report.plant_ph">— 写真を撮ると候補が出ます —</option>
           <!-- report.js が BioCLIP の候補を入れる -->
@@ -99,7 +98,7 @@
 
       <!-- 4. メモ -->
       <div class="field">
-        <label class="field-label" for="noteInput">④ メモ Note</label>
+        <label class="field-label" for="noteInput" data-i18n="report.field_note">④ Note</label>
         <textarea
           id="noteInput"
           class="text-input"
@@ -111,7 +110,7 @@
 
       <!-- 5. 報告者名（ログインユーザー） -->
       <div class="field">
-        <label class="field-label">⑤ 報告者 Reporter</label>
+        <label class="field-label" data-i18n="report.field_reporter">⑤ Reporter</label>
         <div id="reporterName" class="text-input" style="background:#f4f1ea;color:#555;" data-i18n="report.checking_login">
           ログイン確認中…
         </div>

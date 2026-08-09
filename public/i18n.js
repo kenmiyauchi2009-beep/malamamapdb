@@ -69,12 +69,26 @@
     "home.step3_title": { ja: "投稿する", en: "Submit" },
     "home.step3_body": { ja: "投稿すると地図と図鑑にすぐ反映。新種を見つけると発見の演出が出ます。", en: "Your report appears on the map and dex instantly — a discovery moment plays for new finds." },
     "home.features_title": { ja: "できること", en: "Features" },
+    "home.feat_ai_title": { ja: "AI判定", en: "AI identification" },
     "home.feat_map_body": { ja: "目撃された植物をピンで表示。タップで写真・種名・AIの確信度が見られます。", en: "Sightings shown as pins. Tap for the photo, species, and AI confidence." },
     "home.feat_dex_body": { ja: "見つけた植物が集まる図鑑。検索や在来/外来の絞り込みができます。", en: "A field guide of found plants, with search and native/invasive filters." },
     "home.feat_ai_body": { ja: "写真から種を AI が判定。追加学習なしでハワイ固有種を識別します。", en: "AI identifies species from photos — recognizing Hawaiʻi's endemics with no extra training." },
     "home.feat_stats_body": { ja: "在来/外来の傾向やヒートマップを可視化。観測トレンドとして正直に表示します。", en: "Visualizes native/invasive trends and a heatmap — shown honestly as observation trends." },
     "nav.mypage": { ja: "マイページ", en: "My Page" },
     "nav.login": { ja: "ログイン", en: "Login" },
+    "nav.map": { ja: "地図", en: "Map" },
+    "nav.plants": { ja: "植物図鑑", en: "Plants" },
+    "nav.report": { ja: "投稿", en: "Report" },
+    "nav.stats": { ja: "統計", en: "Stats" },
+
+    // ページ <title>（ブラウザのタブ名）
+    "title.home": { ja: "Mālama Map — ハワイ在来植物を守る市民マップ", en: "Mālama Map — A citizen map protecting Hawaiʻi's native plants" },
+    "title.map": { ja: "地図 — Mālama Map", en: "Map — Mālama Map" },
+    "title.plants": { ja: "植物図鑑 — Mālama Map", en: "Plants — Mālama Map" },
+    "title.report": { ja: "投稿 — Mālama Map", en: "Report — Mālama Map" },
+    "title.stats": { ja: "統計 — Mālama Map", en: "Stats — Mālama Map" },
+    "title.profile": { ja: "マイページ — Mālama Map", en: "Profile — Mālama Map" },
+    "title.login": { ja: "ログイン — Mālama Map", en: "Login — Mālama Map" },
 
     // 投稿の削除
     "delete.btn": { ja: "削除", en: "Delete" },
@@ -96,19 +110,26 @@
     "map.rod_watch": { ja: "ROD 要観察", en: "ROD watch" },
     "map.awaiting": { ja: "コミュニティ判定待ち", en: "Awaiting community review" },
     "map.unconfirmed": { ja: "未確認", en: "Unconfirmed" },
+    "map.legend_title": { ja: "凡例", en: "Legend" },
+    "map.recent": { ja: "最新の目撃", en: "Recent Sightings" },
+    // 在来/外来（凡例・ピンのカテゴリ表示で共用）
+    "legend.native": { ja: "在来種", en: "Native" },
+    "legend.invasive": { ja: "外来種", en: "Invasive" },
 
     // 図鑑ページ
+    "plants.heading": { ja: "植物図鑑", en: "Plants" },
+    "plants.filter_all": { ja: "すべて", en: "All" },
     "plants.lead": { ja: "ハワイの在来種と、森を脅かす外来種。見つけて投稿すると図鑑が埋まっていきます。", en: "Hawaiʻi's native plants and the invasives threatening the forest. Find and report them to fill the guide." },
     "plants.empty": { ja: "まだ発見された植物がありません。<a href=\"report.html\">投稿</a>すると図鑑に追加されます。", en: "No plants discovered yet. <a href=\"report.html\">Report</a> one to add it to the guide." },
     "plants.search_ph": { ja: "種名で検索（学名・ハワイ語名）…", en: "Search by name (scientific / Hawaiian)…" },
     "plants.no_result": { ja: "該当する植物が見つかりません。", en: "No matching plants found." },
     "plants.community_tag": { ja: "コミュニティ発見", en: "Community find" },
-    "plants.unverified": { ja: "未分類 Unverified", en: "Unverified" },
+    "plants.unverified": { ja: "未分類", en: "Unverified" },
     "plants.found_x": { ja: "発見 ×{n}", en: "Found ×{n}" },
     "plants.find_hint": { ja: "見つけて投稿すると図鑑が完成します", en: "Find and report it to complete the guide" },
-    "plants.bar_discovered": { ja: "発見 Discovered", en: "Discovered" },
+    "plants.bar_discovered": { ja: "発見", en: "Discovered" },
     "plants.community_count": { ja: "コミュニティ発見 <strong>{n}</strong> 種", en: "<strong>{n}</strong> community finds" },
-    "plants.detail_sightings": { ja: "目撃 Sightings", en: "Sightings" },
+    "plants.detail_sightings": { ja: "目撃", en: "Sightings" },
     "plants.detail_empty": { ja: "まだ目撃報告がありません。見つけて投稿しよう！", en: "No sightings yet. Go find and report one!" },
     "plants.cultural": { ja: "文化・豆知識:", en: "Culture & notes:" },
     "plants.community_desc": { ja: "コミュニティの投稿で見つかった種です。BioCLIP が判定しました。", en: "A species found through community reports, identified by BioCLIP." },
@@ -118,6 +139,12 @@
     "plants.sightings_count": { ja: "（{n}件・最終 {last}）", en: "({n} reports · latest {last})" },
 
     // 投稿ページ
+    "report.heading": { ja: "目撃を投稿", en: "Report a Sighting" },
+    "report.field_photo": { ja: "① 写真", en: "① Photo" },
+    "report.field_location": { ja: "② 地点", en: "② Location" },
+    "report.field_plant": { ja: "③ 植物名", en: "③ Plant" },
+    "report.field_note": { ja: "④ メモ", en: "④ Note" },
+    "report.field_reporter": { ja: "⑤ 報告者", en: "⑤ Reporter" },
     "report.lead": { ja: "見つけた植物の場所と写真を記録しよう。投稿は地図にすぐ反映されます。", en: "Record the location and photo of a plant you found. Your report appears on the map right away." },
     "report.photo_tap": { ja: "タップして写真を撮る / 選ぶ", en: "Tap to take or choose a photo" },
     "report.photo_sub": { ja: "写真を撮る / 選ぶ", en: "Take or choose a photo" },
@@ -180,6 +207,7 @@
     "discovery.to_dex": { ja: "図鑑を見る", en: "View guide" },
 
     // 統計ページ
+    "stats.heading": { ja: "統計", en: "Stats" },
     "stats.lead": { ja: "みんなの投稿から、在来種と外来種の傾向を読み解きます。", en: "Read native vs. invasive trends from everyone's reports." },
     "stats.note_html": { ja: "※ ここに出るのは <strong>観測トレンド（目撃報告数）</strong> であり、植物の実際の個体数ではありません。報告数は観測者・投稿の増減にも左右されるため、構成比や地点数など「努力に左右されにくい指標」を重視しています。", en: "※ These are <strong>observation trends (report counts)</strong>, not actual plant populations. Counts depend on how many people observe and post, so we emphasize effort-robust metrics like composition ratios and location counts." },
     "stats.tab_summary": { ja: "サマリー", en: "Summary" },
@@ -197,8 +225,8 @@
     "stats.kpi_contributors": { ja: "貢献者数", en: "Contributors" },
     "stats.kpi_rod": { ja: "ROD報告（ʻŌhiʻa）", en: "ROD reports (ʻŌhiʻa)" },
     "stats.kpi_recent": { ja: "直近30日の投稿", en: "Reports in last 30 days" },
-    "stats.legend_native": { ja: "在来 Native", en: "Native" },
-    "stats.legend_invasive": { ja: "外来 Invasive", en: "Invasive" },
+    "stats.legend_native": { ja: "在来", en: "Native" },
+    "stats.legend_invasive": { ja: "外来", en: "Invasive" },
     "stats.legend_community": { ja: "未分類", en: "Unclassified" },
     "stats.ds_total": { ja: "合計", en: "Total" },
     "stats.ds_native": { ja: "在来", en: "Native" },
@@ -219,16 +247,18 @@
     "stats.heat_empty": { ja: "この条件の投稿がまだありません。", en: "No reports match this filter yet." },
 
     // マイページ
+    "profile.heading": { ja: "マイページ", en: "Profile" },
     "profile.joined": { ja: "参加日", en: "Joined" },
     "profile.logout": { ja: "ログアウト", en: "Log out" },
     "profile.stats": { ja: "発見 {species} 種 ・ 投稿 {reports} 件", en: "{species} species found · {reports} reports" },
     "profile.empty": { ja: "まだ植物を投稿していません。<a href=\"report.html\">投稿</a>すると、ここに記録が残ります。", en: "You haven't reported any plants yet. <a href=\"report.html\">Report</a> one to start your record." },
     "profile.empty_other": { ja: "このユーザーはまだ植物を投稿していません。", en: "This user hasn't reported any plants yet." },
-    "profile.finds_mine": { ja: "見つけた植物 My Finds", en: "My Finds" },
+    "profile.finds_mine": { ja: "見つけた植物", en: "My Finds" },
     "profile.finds_other": { ja: "{name} の発見", en: "{name}'s Finds" },
     "profile.unconfirmed": { ja: "未確認", en: "Unconfirmed" },
 
     // ログイン
+    "login.heading": { ja: "ログイン", en: "Login" },
     "login.lead": { ja: "投稿するには Google アカウントでのログインが必要です。", en: "You need to sign in with a Google account to post." },
     "login.google": { ja: "Google でログイン", en: "Sign in with Google" },
     "login.hint": { ja: "ログインすると投稿がアカウントに紐づき、地図・図鑑に共有されます。", en: "Signing in ties your reports to your account and shares them to the map and guide." },

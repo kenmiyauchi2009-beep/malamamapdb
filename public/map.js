@@ -37,7 +37,7 @@ setTimeout(fitHawaii, 300);
 
 /* 未確認（plantId が "unknown" 等で植物が見つからない）投稿の代用データ */
 const UNKNOWN_PLANT = {
-  hawaiianName: "未確認 Unverified",
+  hawaiianName: t("map.unconfirmed"),
   scientificName: t("map.awaiting"),
   category: "unknown",
   status: "watch",
@@ -67,8 +67,8 @@ function popupHtml(plant, sighting) {
     ? '<span class="badge rod">' + t("map.rod_watch") + "</span> "
     : "";
   const catLabel =
-    plant.category === "native" ? "在来種 Native" :
-    plant.category === "invasive" ? "外来種 Invasive" : "未確認 Unverified";
+    plant.category === "native" ? t("legend.native") :
+    plant.category === "invasive" ? t("legend.invasive") : t("map.unconfirmed");
   // 写真があれば表示（ユーザー投稿）
   const photo = sighting.photoUrl
     ? '<img class="popup-photo" src="' + sighting.photoUrl + '" alt="投稿写真">'
