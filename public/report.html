@@ -52,11 +52,12 @@
       <div class="field">
         <label class="field-label">① 写真 Photo</label>
         <div class="photo-uploader" id="photoBox">
+          <!-- capture 属性は付けない：スマホで「カメラ撮影」と「フォトライブラリから選ぶ」を
+               どちらも選べるようにするため（付けるとカメラ強制になる）。multiple 無し＝1枚だけ選択。 -->
           <input
             type="file"
             id="photoInput"
             accept="image/*"
-            capture="environment"
             hidden
           />
           <div class="photo-placeholder" id="photoPlaceholder">
