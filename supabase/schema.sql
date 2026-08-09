@@ -68,6 +68,7 @@ create policy users_update_self on public.users
 -- --- sightings ---
 drop policy if exists sightings_select_all    on public.sightings;
 drop policy if exists sightings_insert_owner  on public.sightings;
+drop policy if exists sightings_delete_owner  on public.sightings;
 
 -- 目撃情報は公開読み取り（地図・図鑑・フィードで使う）
 create policy sightings_select_all on public.sightings
@@ -76,6 +77,10 @@ create policy sightings_select_all on public.sightings
 -- 投稿はログインユーザーのみ・自分の user_id でのみ作成可
 create policy sightings_insert_owner on public.sightings
   for insert with check (auth.uid() is not null and user_id = auth.uid());
+
+-- 削除は本人の投稿のみ（user_id = 本人）。シード（user_id = null）は誰も削除できない。
+create policy sightings_delete_owner on public.sightings
+  for delete using (auth.uid() is not null and user_id = auth.uid());
 
 -- ============================================================
 -- 4. 新規サインアップで users 行を自動生成

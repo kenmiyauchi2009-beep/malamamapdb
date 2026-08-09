@@ -449,6 +449,18 @@ h1, h2, h3, h4 { font-family: var(--serif); font-weight: 600; }
 .reporter-link { color: var(--forest); text-decoration: underline; text-underline-offset: 2px; }
 .reporter-link:hover { color: var(--lehua); }
 
+/* 自分の投稿を削除するボタン（ポップアップ／フィード） */
+.del-btn {
+  display: inline-flex; align-items: center; gap: 0.25rem;
+  margin-top: 0.5rem;
+  border: 1px solid var(--lehua); background: transparent; color: var(--lehua);
+  border-radius: 6px; padding: 0.3rem 0.6rem;
+  font-family: var(--sans); font-size: 0.78rem; cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.del-btn:hover { background: var(--lehua); color: #fff; }
+.feed-del { margin-top: 0.45rem; }
+
 /* ---------- マイページ（プロフィール） ---------- */
 .profile-head {
   display: flex;

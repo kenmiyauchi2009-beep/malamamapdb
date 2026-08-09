@@ -92,6 +92,10 @@ function popupHtml(plant, sighting) {
       '<div class="popup-note">「' + sighting.note + "」</div>" +
       '<div class="popup-meta">' + catLabel + " ・ " + sighting.date + " ・ " +
         '<a class="reporter-link" href="profile.html?user=' + encodeURIComponent(sighting.reporter) + '">' + sighting.reporter + "</a></div>" +
+      // 自分の投稿にだけ削除ボタンを出す
+      (isMine(sighting)
+        ? '<button type="button" class="del-btn" data-del="' + sighting.id + '">🗑 ' + t("delete.btn") + "</button>"
+        : "") +
     "</div>"
   );
 }
@@ -100,6 +104,24 @@ function popupHtml(plant, sighting) {
 // sighting.id → marker の対応表（フィードからクリックで飛べるように保持）
 const markersById = {};
 
+// 現在ログイン中ユーザーの id（初期化時に解決）。自分の投稿の判定に使う。
+let MY_ID = null;
+function isMine(s) { return !!(MY_ID && s.userId && s.userId === MY_ID); }
+
+// 削除（確認ダイアログ＝最低1回）→ 成功でピンとフィードカードを取り除く
+async function handleDelete(id) {
+  if (!window.confirm(t("delete.confirm"))) return;   // ← 最低1回の確認
+  try {
+    await deleteSighting(id);
+    const m = markersById[id];
+    if (m) { m.closePopup(); map.removeLayer(m); delete markersById[id]; }
+    const card = document.querySelector('.feed-card[data-id="' + id + '"]');
+    if (card) card.remove();
+  } catch (err) {
+    window.alert(t("delete.failed") + "\n" + err.message);
+  }
+}
+
 function drawMarkers() {
   getAllSightings().forEach(function (s) {
     const plant = getPlantById(s.plantId) || UNKNOWN_PLANT; // 未確認は代用データ
@@ -107,6 +129,17 @@ function drawMarkers() {
     const marker = L.circleMarker([s.lat, s.lng], markerStyle(plant))
       .addTo(map)
       .bindPopup(popupHtml(plant, s));
+
+    // ポップアップ内の削除ボタンにハンドラを結ぶ（Leaflet はクリック伝播を止めるため
+    // document への委譲でなく、開いた時に直接バインドする）
+    marker.on("popupopen", function (e) {
+      const el = e.popup.getElement();
+      const btn = el && el.querySelector("[data-del]");
+      if (btn && !btn._bound) {
+        btn._bound = true;
+        btn.addEventListener("click", function () { handleDelete(btn.getAttribute("data-del")); });
+      }
+    });
 
     markersById[s.id] = marker;
   });
@@ -126,6 +159,7 @@ function renderFeed() {
 
     const card = document.createElement("div");
     card.className = "feed-card" + (plant.category === "invasive" ? " invasive" : "");
+    card.dataset.id = s.id;   // 削除時に該当カードを探すため
 
     const photo = s.photoUrl
       ? '<img class="fc-photo" src="' + s.photoUrl + '" alt="投稿写真">'
@@ -150,10 +184,24 @@ function renderFeed() {
       '<div class="fc-meta"><span>' + s.date + '</span><span><a class="reporter-link" href="profile.html?user=' +
         encodeURIComponent(s.reporter) + '">' + s.reporter + "</a></span></div>";
 
+    // 自分の投稿にだけ削除ボタンを付ける
+    if (isMine(s)) {
+      const del = document.createElement("button");
+      del.type = "button";
+      del.className = "del-btn feed-del";
+      del.setAttribute("data-del", s.id);
+      del.textContent = "🗑 " + t("delete.btn");
+      del.addEventListener("click", function (ev) {
+        ev.stopPropagation();          // カードの地図移動を止める
+        handleDelete(s.id);
+      });
+      card.appendChild(del);
+    }
+
     // カードをクリック → 地図をそのピンへ移動してポップアップを開く
-    // （投稿者名リンクをタップしたときは地図移動せずプロフィールへ）
+    // （投稿者名リンク・削除ボタンをタップしたときは地図移動しない）
     card.addEventListener("click", function (e) {
-      if (e.target.closest("a")) return;
+      if (e.target.closest("a") || e.target.closest("[data-del]")) return;
       map.setView([s.lat, s.lng], 11, { animate: true });
       const m = markersById[s.id];
       if (m) m.openPopup();
@@ -163,8 +211,13 @@ function renderFeed() {
   });
 }
 
-/* ---------- 初期化：投稿を取得してから描画 ---------- */
-loadSightings().then(function () {
+/* ---------- 初期化：投稿とログインユーザーを取得してから描画 ---------- */
+// getCurrentUser（auth.js）で自分の id を得て、自分の投稿に削除ボタンを出せるようにする
+Promise.all([
+  loadSightings(),
+  getCurrentUser().catch(function () { return null; })
+]).then(function (r) {
+  MY_ID = r[1] ? r[1].id : null;
   drawMarkers();
   renderFeed();
 });

@@ -348,6 +348,23 @@ async function saveSighting(sighting) {
   return created;
 }
 
+// 1件削除する（ログイン必須・本人の投稿のみ）。成功でキャッシュからも取り除く。
+async function deleteSighting(id) {
+  const token = await getAccessToken();
+  if (!token) throw new Error("ログインが必要です");
+
+  const res = await fetch(API_BASE + "/sightings/" + encodeURIComponent(id), {
+    method: "DELETE",
+    headers: { Authorization: "Bearer " + token },
+  });
+  if (!res.ok) {
+    const info = await res.json().catch(function () { return {}; });
+    throw new Error(info.error || "削除に失敗しました（" + res.status + "）");
+  }
+  _sightings = _sightings.filter(function (s) { return s.id !== id; });
+  return true;
+}
+
 // 写真をアップロードして URL を得る（ログイン必須）。
 async function uploadPhoto(blob) {
   const token = await getAccessToken();

@@ -37,7 +37,7 @@ app.use("*", async (c, next) => {
 			if (allowed.length === 0) return origin ?? "*";
 			return allowed.includes(origin) ? origin : allowed[0];
 		},
-		allowMethods: ["GET", "POST", "OPTIONS"],
+		allowMethods: ["GET", "POST", "DELETE", "OPTIONS"],
 		allowHeaders: ["Authorization", "Content-Type"],
 		maxAge: 86400,
 	})(c, next);
@@ -95,6 +95,7 @@ interface SightingRow {
 function toCamel(r: SightingRow) {
 	return {
 		id: r.id,
+		userId: r.user_id,   // フロントで所有者判定（自分の投稿の削除ボタン表示）に使う
 		plantId: r.plant_id,
 		speciesName: r.species_name,
 		aiScore: r.ai_score,
@@ -208,6 +209,33 @@ app.post("/photos", async (c) => {
 
 	const { data } = auth.client.storage.from(PHOTO_BUCKET).getPublicUrl(key);
 	return c.json({ url: data.publicUrl }, 201);
+});
+
+// 投稿を削除（ログイン必須・本人の投稿のみ）
+app.delete("/sightings/:id", async (c) => {
+	const auth = await authenticate(c);
+	if (!auth) return c.json({ error: "認証が必要です" }, 401);
+
+	const id = c.req.param("id");
+	if (!id) return c.json({ error: "id が必要です" }, 400);
+
+	// user_id 一致で本人の投稿のみ削除。RLS(sightings_delete_owner) でも二重に保護。
+	// 他人の投稿やシード(user_id=null)は 0 件になり 404 を返す。
+	const { data, error } = await auth.client
+		.from("sightings")
+		.delete()
+		.eq("id", id)
+		.eq("user_id", auth.user.id)
+		.select("id");
+
+	if (error) return c.json({ error: error.message }, 500);
+	if (!data || data.length === 0) {
+		return c.json(
+			{ error: "削除できる投稿が見つかりません（自分の投稿のみ削除できます）" },
+			404,
+		);
+	}
+	return c.json({ ok: true, id });
 });
 
 export default app;

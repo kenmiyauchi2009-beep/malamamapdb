@@ -75,6 +75,11 @@
     "home.feat_stats_body": { ja: "在来/外来の傾向やヒートマップを可視化。観測トレンドとして正直に表示します。", en: "Visualizes native/invasive trends and a heatmap — shown honestly as observation trends." },
     "nav.mypage": { ja: "マイページ", en: "My Page" },
     "nav.login": { ja: "ログイン", en: "Login" },
+
+    // 投稿の削除
+    "delete.btn": { ja: "削除", en: "Delete" },
+    "delete.confirm": { ja: "この投稿を削除しますか？この操作は取り消せません。", en: "Delete this sighting? This action cannot be undone." },
+    "delete.failed": { ja: "削除に失敗しました", en: "Failed to delete" },
     "lang.ja": { ja: "日本語", en: "日本語" },
     "lang.en": { ja: "English", en: "English" },
 
