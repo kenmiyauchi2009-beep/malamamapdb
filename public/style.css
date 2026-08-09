@@ -30,7 +30,11 @@
   --radius-lg:     10px;
 
   /* セリフ体（見出し・種名・学名）／ 本文サンセリフ */
-  --serif: "Fraunces", "Hiragino Mincho ProN", "Yu Mincho", "YuMincho", Georgia, serif;
+  /* Georgia / Times は「Latin用のフォールバック」を日本語明朝より前に置く。
+     こうすると ā(U+0101) が Fraunces に無い環境でも日本語明朝でなく Georgia で描画され、
+     マクロン（ā の上の棒）が正しい位置に乗る（"Mālama" の l が t に化けるのを防ぐ）。
+     日本語の文字は Georgia/Times に無いので、そのまま Hiragino/Yu Mincho へフォールバックする。 */
+  --serif: "Fraunces", Georgia, "Times New Roman", "Hiragino Mincho ProN", "Yu Mincho", "YuMincho", serif;
   --sans:  "Hiragino Sans", "Yu Gothic", "Segoe UI", system-ui, "Helvetica Neue", sans-serif;
 }
 
