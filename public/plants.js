@@ -152,39 +152,86 @@ function passFilter(filter, category, discovered) {
   }
 }
 
-/* ---------- 全カードを描画 ---------- */
-function renderCards(filter) {
-  grid.innerHTML = "";
+/* ---------- 検索・フィルタの状態 ---------- */
+let currentFilter = "all";
+let searchQuery = "";
+let lazyObserver = null;   // 遅延描画用の IntersectionObserver
+
+// 検索一致（学名・ハワイ語名・英名のいずれかに部分一致）
+function matchSearch(fields) {
+  if (!searchQuery) return true;
+  return fields.some(function (f) {
+    return f && f.toLowerCase().indexOf(searchQuery) !== -1;
+  });
+}
+
+/* ---------- 表示アイテムを集めて描画 ---------- */
+function renderCards() {
   const dex = buildDiscovery();
 
-  // 在来 → 外来 の順に並べる（安定ソートで各グループ内は登録順を保持）
-  const ordered = PLANTS.slice().sort(function (a, b) {
+  // 在来 → 外来 の順・発見済みのみ・フィルタ＋検索を適用してアイテム化
+  const items = [];
+  PLANTS.slice().sort(function (a, b) {
     const rank = function (c) { return c === "native" ? 0 : 1; };
     return rank(a.category) - rank(b.category);
+  }).forEach(function (plant) {
+    if (!dex.discoveredIds.has(plant.id)) return;                    // 発見済みのみ
+    if (!passFilter(currentFilter, plant.category, true)) return;
+    if (!matchSearch([plant.hawaiianName, plant.scientificName, plant.englishName])) return;
+    items.push({ kind: "curated", plant: plant, photo: dex.plantPhotos[plant.id] });
   });
-
-  // 骨格種：発見済みのものだけ表示（未発見は図鑑に出さない）
-  ordered.forEach(function (plant) {
-    const discovered = dex.discoveredIds.has(plant.id);
-    if (!discovered) return;  // 未発見はスキップ
-    if (passFilter(filter, plant.category, discovered)) {
-      grid.appendChild(createCard(plant, discovered, dex.plantPhotos[plant.id]));
-    }
-  });
-
   // コミュニティ発見種（未分類なので「すべて」表示のときのみ）
-  if (filter === "all") {
+  if (currentFilter === "all") {
     Object.keys(dex.community).forEach(function (name) {
-      grid.appendChild(createCommunityCard(dex.community[name]));
+      const sp = dex.community[name];
+      if (!matchSearch([sp.name])) return;
+      items.push({ kind: "community", sp: sp });
     });
   }
 
-  // 1件も無ければ空状態を表示
-  if (!grid.children.length) {
-    grid.innerHTML = '<p class="dex-empty">' + t("plants.empty") + "</p>";
+  lazyRender(items);
+  updateProgress(dex);
+}
+
+/* ---------- 遅延描画（スクロールで少しずつ描く：3,000種でも軽い） ---------- */
+function lazyRender(items) {
+  if (lazyObserver) { lazyObserver.disconnect(); lazyObserver = null; }
+  grid.innerHTML = "";
+
+  if (!items.length) {
+    grid.innerHTML = '<p class="dex-empty">' +
+      (searchQuery ? t("plants.no_result") : t("plants.empty")) + "</p>";
+    return;
   }
 
-  updateProgress(dex);
+  const BATCH = 24;   // 1回に描く枚数
+  let i = 0;
+  const sentinel = document.createElement("div");
+  sentinel.className = "dex-sentinel";
+
+  function renderMore() {
+    const end = Math.min(i + BATCH, items.length);
+    const frag = document.createDocumentFragment();
+    for (; i < end; i++) {
+      const it = items[i];
+      frag.appendChild(it.kind === "curated"
+        ? createCard(it.plant, true, it.photo)
+        : createCommunityCard(it.sp));
+    }
+    grid.insertBefore(frag, sentinel);
+    if (i >= items.length && lazyObserver) {
+      lazyObserver.disconnect(); lazyObserver = null;
+      sentinel.remove();
+    }
+  }
+
+  grid.appendChild(sentinel);
+  // 画面下に近づいたら次のバッチを描く（rootMargin で先読み）
+  lazyObserver = new IntersectionObserver(function (entries) {
+    if (entries[0].isIntersecting) renderMore();
+  }, { rootMargin: "500px" });
+  lazyObserver.observe(sentinel);
+  renderMore();   // 最初の1バッチ
 }
 
 /* ---------- 進捗（在来/外来 別の小図鑑バー） ---------- */
@@ -229,8 +276,18 @@ filterBar.addEventListener("click", function (e) {
     b.classList.remove("active");
   });
   btn.classList.add("active");
-  renderCards(btn.dataset.filter);
+  currentFilter = btn.dataset.filter;
+  renderCards();
 });
+
+/* ---------- 検索ボックス ---------- */
+const dexSearch = document.getElementById("dexSearch");
+if (dexSearch) {
+  dexSearch.addEventListener("input", function () {
+    searchQuery = dexSearch.value.trim().toLowerCase();
+    renderCards();
+  });
+}
 
 /* ============================================================
    詳細モーダル（カードタップで開く）
@@ -367,5 +424,5 @@ function closeDetail() {
 
 /* ---------- 初期表示：投稿を取得してから描画 ---------- */
 loadSightings().then(function () {
-  renderCards("all");
+  renderCards();
 });

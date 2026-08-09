@@ -75,6 +75,8 @@
     // 図鑑ページ
     "plants.lead": { ja: "ハワイの在来種と、森を脅かす外来種。見つけて投稿すると図鑑が埋まっていきます。", en: "Hawaiʻi's native plants and the invasives threatening the forest. Find and report them to fill the guide." },
     "plants.empty": { ja: "まだ発見された植物がありません。<a href=\"report.html\">投稿</a>すると図鑑に追加されます。", en: "No plants discovered yet. <a href=\"report.html\">Report</a> one to add it to the guide." },
+    "plants.search_ph": { ja: "種名で検索（学名・ハワイ語名）…", en: "Search by name (scientific / Hawaiian)…" },
+    "plants.no_result": { ja: "該当する植物が見つかりません。", en: "No matching plants found." },
     "plants.community_tag": { ja: "コミュニティ発見", en: "Community find" },
     "plants.unverified": { ja: "未分類 Unverified", en: "Unverified" },
     "plants.found_x": { ja: "発見 ×{n}", en: "Found ×{n}" },

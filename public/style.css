@@ -252,7 +252,14 @@ h1, h2, h3, h4 { font-family: var(--serif); font-weight: 600; }
 }
 .page-intro p { color: var(--text-soft); font-size: 0.95rem; margin-top: 0.75rem; max-width: 62ch; }
 
-.filters { display: flex; gap: 0.45rem; margin: 1.6rem 0 2.2rem; flex-wrap: wrap; }
+/* 図鑑の検索ボックス */
+.dex-search { margin-top: 1.6rem; }
+.dex-search input { width: 100%; max-width: 440px; }
+
+.filters { display: flex; gap: 0.45rem; margin: 1rem 0 2.2rem; flex-wrap: wrap; }
+
+/* 遅延描画のセンチネル（画面下で次バッチを呼ぶ・不可視） */
+.dex-sentinel { grid-column: 1 / -1; height: 1px; }
 .filter-btn {
   font-family: var(--sans);
   border: 1px solid var(--forest-light);
