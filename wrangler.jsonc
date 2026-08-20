@@ -29,7 +29,16 @@
 	 *   もしくはダッシュボードの Variables で設定すること（ここには置かない）。
 	 */
 	"vars": {
-		"ALLOWED_ORIGIN": "https://malama-map.com,https://web.malama-map.com,http://http://localhost:3000"
+		"ALLOWED_ORIGIN": "https://malama-map.com,https://web.malama-map.com,http://localhost:3000"
+	},
+	/**
+	 * Cron Trigger（Supabase 無料プランの自動一時停止を防ぐ keep-alive）。
+	 * 無料プロジェクトは「7日間 DB アクティビティ不足」で pause される。
+	 * 毎日 UTC 12:00 に scheduled ハンドラが軽い select を投げてアクティブ維持。
+	 * https://developers.cloudflare.com/workers/configuration/cron-triggers/
+	 */
+	"triggers": {
+		"crons": ["0 12 * * *"]
 	}
 	/**
 	 * Smart Placement

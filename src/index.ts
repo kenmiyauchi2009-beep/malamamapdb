@@ -241,4 +241,30 @@ app.delete("/sightings/:id", async (c) => {
 	return c.json({ ok: true, id });
 });
 
-export default app;
+/* ============================================================
+   Cron Trigger（keep-alive）
+   ------------------------------------------------------------
+   Supabase 無料プロジェクトは「7日間 DB アクティビティ不足」で
+   自動一時停止される。毎日1回この scheduled ハンドラが軽い select を
+   投げてアクティブ状態を維持する（wrangler.jsonc の triggers.crons）。
+   ============================================================ */
+async function keepSupabaseAwake(env: Bindings): Promise<void> {
+	try {
+		const supabase = anonClient(env);
+		// 極小のクエリ（1行だけ）。結果は使わない。DB を触ることが目的。
+		await supabase.from("sightings").select("id").limit(1);
+		console.log("keep-alive: Supabase ping OK");
+	} catch (e) {
+		console.error("keep-alive: Supabase ping failed", e);
+	}
+}
+
+export default {
+	// HTTP は Hono アプリに委譲
+	fetch: (request: Request, env: Bindings, ctx: ExecutionContext) =>
+		app.fetch(request, env, ctx),
+	// Cron Trigger（日次 keep-alive）
+	scheduled: (_event: ScheduledController, env: Bindings, ctx: ExecutionContext) => {
+		ctx.waitUntil(keepSupabaseAwake(env));
+	},
+} satisfies ExportedHandler<Bindings>;
