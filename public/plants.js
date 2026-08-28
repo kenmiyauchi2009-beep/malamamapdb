@@ -250,8 +250,8 @@ function updateProgress(dex) {
 
   // 分母＝BioCLIP が判別できる全種（hawaii_plants.csv の種数）
   const BIOCLIP_TOTAL_SPECIES = 3191;
-  // 在来＋外来を合算して1本のバーにする
-  const found = nativeFound + invasiveFound;
+  // 発見した種＝骨格（在来＋外来）＋コミュニティ発見種。コミュニティも「発見した種」に数える。
+  const found = nativeFound + invasiveFound + communityFound;
   const pct = ((found / BIOCLIP_TOTAL_SPECIES) * 100).toFixed(2); // 小数第2位まで
 
   dexProgress.innerHTML =
