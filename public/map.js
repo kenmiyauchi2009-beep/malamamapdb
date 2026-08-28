@@ -47,9 +47,11 @@ const UNKNOWN_PLANT = {
 };
 
 /* ---------- 2. ピンのスタイルを決める ---------- */
-// 在来＝緑 / 外来＝赤 / 未確認＝灰。ROD 対象種は白塗り＋赤縁で目立たせる。
-function markerStyle(plant) {
-  if (plant.rodRisk) {
+// 在来＝緑 / 外来＝赤 / 未確認＝灰。
+// 白塗り＋赤縁の「ROD要観察」ピンは、その投稿が ROD 疑い（症状チェックに該当）のときだけ。
+// 種が ROD 感受性（ʻŌhiʻa）でも、健康なら在来（緑）として表示する。
+function markerStyle(plant, sighting) {
+  if (sighting && sighting.rodSuspect) {
     return { color: "#c1272d", fillColor: "#ffffff", fillOpacity: 1, weight: 4, radius: 9 };
   }
   if (plant.category === "invasive") {
@@ -63,7 +65,8 @@ function markerStyle(plant) {
 
 // ポップアップの中身（クリックで出る吹き出し）
 function popupHtml(plant, sighting) {
-  const rodTag = plant.rodRisk
+  // 「ROD要観察」バッジは、この投稿が ROD 疑いのときだけ（健康な ʻŌhiʻa には出さない）
+  const rodTag = sighting.rodSuspect
     ? '<span class="badge rod">' + t("map.rod_watch") + "</span> "
     : "";
   const catLabel =
@@ -130,7 +133,7 @@ function drawMarkers() {
   getAllSightings().forEach(function (s) {
     const plant = getPlantById(s.plantId) || UNKNOWN_PLANT; // 未確認は代用データ
 
-    const marker = L.circleMarker([s.lat, s.lng], markerStyle(plant))
+    const marker = L.circleMarker([s.lat, s.lng], markerStyle(plant, s))
       .addTo(map)
       .bindPopup(popupHtml(plant, s));
 
